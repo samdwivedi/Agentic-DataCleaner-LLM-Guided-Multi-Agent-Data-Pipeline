@@ -9,24 +9,24 @@ from app.agents.profiler import ProfilerAgent, ProfilerReport
 report = ProfilerAgent().profile(df)
 """
 
-from app.models.profiler import (
-    ProfilerReport,
-    ColumnProfile,
-    NumericalStats,
-    CategoricalStats,
-    DatasetMeta,
-    ProblematicColumn,
-    DuplicateInfo,
-)
 from app.agents.profiler.agent import ProfilerAgent
+from app.models.profiler import (
+    CategoricalStats,
+    ColumnProfile,
+    DatasetMeta,
+    DuplicateInfo,
+    NumericalStats,
+    ProblematicColumn,
+    ProfilerReport,
+)
 
 __all__ = [
+    "CategoricalStats",
+    "ColumnProfile",
+    "DatasetMeta",
+    "DuplicateInfo",
+    "NumericalStats",
+    "ProblematicColumn",
     "ProfilerAgent",
     "ProfilerReport",
-    "ColumnProfile",
-    "NumericalStats",
-    "CategoricalStats",
-    "DatasetMeta",
-    "ProblematicColumn",
-    "DuplicateInfo",
 ]

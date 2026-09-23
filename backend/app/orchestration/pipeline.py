@@ -1,21 +1,24 @@
 import io
 import json
-import uuid
 import logging
-from typing import Dict, Any, List
+import uuid
+from typing import Any
 
 import pandas as pd
-
-from app.agents.profiler.agent import ProfilerAgent
-from app.agents.schema_validator.agent import SchemaValidator, ValidationSchema, ColumnRule
 from app.agents.anomaly_detector.agent import AnomalyDetector
-from app.agents.strategist.agent import StrategistAgent
-from app.llm.providers import OllamaProvider
-from app.models.strategy import StrategistConfig, CleaningStrategy
-from app.agents.strategy_validator.agent import StrategyValidator
-from app.models.strategy_validator import ValidatedCleaningStrategy
 from app.agents.executor.agent import ExecutorAgent
+from app.agents.profiler.agent import ProfilerAgent
+from app.agents.schema_validator.agent import (
+    ColumnRule,
+    SchemaValidator,
+    ValidationSchema,
+)
+from app.agents.strategist.agent import StrategistAgent
+from app.agents.strategy_validator.agent import StrategyValidator
 from app.agents.validator.agent import QualityAssessor
+from app.llm.providers import OllamaProvider
+from app.models.strategy import CleaningStrategy, StrategistConfig
+from app.models.strategy_validator import ValidatedCleaningStrategy
 from app.persistence.repository import SessionRepository
 
 logger = logging.getLogger(__name__)
@@ -40,14 +43,14 @@ class PipelineOrchestrator:
         try:
             pd.read_csv(io.BytesIO(file_bytes))
         except Exception as e:
-            raise ValueError(f"Invalid CSV: {str(e)}")
+            raise ValueError(f"Invalid CSV: {e!s}")
             
         session_id = str(uuid.uuid4())
         repo.create_session(session_id, file_bytes)
         return session_id
 
     @staticmethod
-    def analyze(repo: SessionRepository, session_id: str) -> Dict[str, Any]:
+    def analyze(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         csv_bytes = repo.get_original_csv(session_id)
         df = pd.read_csv(io.BytesIO(csv_bytes))
 
@@ -73,7 +76,7 @@ class PipelineOrchestrator:
         }
 
     @staticmethod
-    def generate_strategy(repo: SessionRepository, session_id: str, custom_provider_url: str = None) -> Dict[str, Any]:
+    def generate_strategy(repo: SessionRepository, session_id: str, custom_provider_url: str = None) -> dict[str, Any]:
         p_report = repo.get_report(session_id, "profiler_report")
         s_report = repo.get_report(session_id, "schema_report")
         a_report = repo.get_report(session_id, "anomaly_report")
@@ -95,7 +98,7 @@ class PipelineOrchestrator:
         return strategy.model_dump()
 
     @staticmethod
-    def validate_strategy(repo: SessionRepository, session_id: str, actions: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def validate_strategy(repo: SessionRepository, session_id: str, actions: list[dict[str, Any]]) -> dict[str, Any]:
         csv_bytes = repo.get_original_csv(session_id)
         df = pd.read_csv(io.BytesIO(csv_bytes))
         known_columns = set(df.columns)
@@ -126,7 +129,7 @@ class PipelineOrchestrator:
         return validated.model_dump()
 
     @staticmethod
-    def execute_strategy(repo: SessionRepository, session_id: str) -> Dict[str, Any]:
+    def execute_strategy(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         validated_dict = repo.get_report(session_id, "strategy_validated")
         validated = ValidatedCleaningStrategy(**validated_dict)
         
@@ -149,7 +152,7 @@ class PipelineOrchestrator:
         return result.model_dump()
 
     @staticmethod
-    def validate_quality(repo: SessionRepository, session_id: str) -> Dict[str, Any]:
+    def validate_quality(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         csv_orig = repo.get_original_csv(session_id)
         df_before = pd.read_csv(io.BytesIO(csv_orig))
         

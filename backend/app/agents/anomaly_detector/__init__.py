@@ -11,16 +11,16 @@ detector = AnomalyDetector(config=AnomalyConfig(iqr_multiplier=1.5, zscore_thres
 report = detector.detect(df)
 """
 
+from app.agents.anomaly_detector.agent import AnomalyDetector
 from app.models.anomaly import (
     AnomalyConfig,
-    ColumnAnomalyResult,
     AnomalyReport,
+    ColumnAnomalyResult,
 )
-from app.agents.anomaly_detector.agent import AnomalyDetector
 
 __all__ = [
-    "AnomalyDetector",
     "AnomalyConfig",
-    "ColumnAnomalyResult",
+    "AnomalyDetector",
     "AnomalyReport",
+    "ColumnAnomalyResult",
 ]

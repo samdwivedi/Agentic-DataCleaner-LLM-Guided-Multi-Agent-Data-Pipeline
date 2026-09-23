@@ -16,9 +16,8 @@ Rules
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Tuple
+from typing import Any
 
-import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 # ── Type alias for operation return values ────────────────────────────────────
 # (modified_df, rows_affected, values_changed)
-OpResult = Tuple[pd.DataFrame, int, int]
+OpResult = tuple[pd.DataFrame, int, int]
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -34,7 +33,7 @@ OpResult = Tuple[pd.DataFrame, int, int]
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def median_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def median_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Fill missing values with the column's median."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -51,7 +50,7 @@ def median_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> 
     return result, null_count, null_count
 
 
-def mean_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def mean_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Fill missing values with the column's mean."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -68,7 +67,7 @@ def mean_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> Op
     return result, null_count, null_count
 
 
-def mode_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def mode_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Fill missing values with the column's mode (most frequent value)."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -90,7 +89,7 @@ def mode_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> Op
     return result, null_count, null_count
 
 
-def constant_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def constant_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Fill missing values with a user-specified constant."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -115,7 +114,7 @@ def constant_imputation(df: pd.DataFrame, column: str, params: Dict[str, Any]) -
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def drop_column(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def drop_column(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Remove an entire column from the DataFrame."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -125,7 +124,7 @@ def drop_column(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResu
     return result, 0, rows_before  # every row lost one cell
 
 
-def drop_rows(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def drop_rows(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Drop rows where the specified column has missing values."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -140,7 +139,7 @@ def drop_rows(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult
     return result, null_count, 0
 
 
-def drop_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def drop_outliers(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Drop rows where the column value is an IQR-based outlier."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -162,7 +161,7 @@ def drop_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpRe
     return result, outlier_count, 0
 
 
-def remove_duplicates(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def remove_duplicates(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Remove duplicate rows (considering all columns or a subset)."""
     subset = params.get("subset")  # optional list of columns
     rows_before = len(df)
@@ -176,7 +175,7 @@ def remove_duplicates(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> 
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def clamp_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def clamp_outliers(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Clamp (winsorise) outlier values to IQR-derived bounds."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
@@ -201,7 +200,7 @@ def clamp_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpR
     return result, values_changed, values_changed
 
 
-def cap_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def cap_outliers(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Alias for clamp_outliers — caps values at IQR-derived bounds."""
     return clamp_outliers(df, column, params)
 
@@ -211,7 +210,7 @@ def cap_outliers(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpRes
 # ═══════════════════════════════════════════════════════════════════════════════
 
 
-def standardize_categories(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def standardize_categories(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """
     Standardise categorical values: strip whitespace, lowercase, and
     optionally apply a mapping dict.
@@ -238,7 +237,7 @@ def standardize_categories(df: pd.DataFrame, column: str, params: Dict[str, Any]
     return result, values_changed, values_changed
 
 
-def convert_datatype(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def convert_datatype(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """
     Convert a column to a target pandas dtype.
 
@@ -281,7 +280,7 @@ def convert_datatype(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> O
     return result, 0, values_changed
 
 
-def noop(df: pd.DataFrame, column: str, params: Dict[str, Any]) -> OpResult:
+def noop(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """No-op: returns the DataFrame unchanged."""
     return df, 0, 0
 

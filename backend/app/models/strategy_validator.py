@@ -19,9 +19,9 @@ that every enclosed action has passed all deterministic safety checks.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ── Violation Severity ────────────────────────────────────────────────────────
 
@@ -89,7 +89,7 @@ class SafetyThresholds(BaseModel):
 
 # Maps each action to the set of inferred_type values it is allowed to target.
 # 'drop_column', 'drop_rows', and 'none' are type-agnostic (any column).
-ACTION_DTYPE_COMPATIBILITY: Dict[str, Optional[set]] = {
+ACTION_DTYPE_COMPATIBILITY: dict[str, set | None] = {
     "drop_column":              None,   # any type
     "drop_rows":                None,   # any type
     "none":                     None,   # any type
@@ -117,10 +117,10 @@ class StrategyViolation(BaseModel, frozen=True):
     severity: ViolationSeverity = Field(
         ViolationSeverity.ERROR, description="Severity level.",
     )
-    column: Optional[str] = Field(
+    column: str | None = Field(
         None, description="The column the violation applies to, if any.",
     )
-    action: Optional[str] = Field(
+    action: str | None = Field(
         None, description="The action string that triggered the violation.",
     )
     message: str = Field(
@@ -142,11 +142,11 @@ class ValidatedCleaningStrategy(BaseModel, frozen=True):
     is_valid: bool = Field(
         ..., description="True only if every action passed all safety checks.",
     )
-    actions: List[Dict[str, Any]] = Field(
+    actions: list[dict[str, Any]] = Field(
         default_factory=list,
         description="The validated action dicts (only meaningful when is_valid=True).",
     )
-    violations: List[StrategyViolation] = Field(
+    violations: list[StrategyViolation] = Field(
         default_factory=list,
         description="All detected validation failures.",
     )

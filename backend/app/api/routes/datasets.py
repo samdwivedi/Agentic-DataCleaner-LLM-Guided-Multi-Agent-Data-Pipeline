@@ -1,22 +1,22 @@
 import io
 import json
 import logging
-from typing import Any, Dict, List
-from fastapi import APIRouter, File, HTTPException, UploadFile, Depends
-from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from typing import Any
 
 from app.orchestration.pipeline import PipelineOrchestrator
 from app.persistence.database import get_db
 from app.persistence.repository import SessionRepository
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
+from sqlalchemy.orm import Session
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/pipeline")
 
 class StrategyApprovalRequest(BaseModel):
-    actions: List[Dict[str, Any]]
+    actions: list[dict[str, Any]]
 
 def get_repo(db: Session = Depends(get_db)) -> SessionRepository:
     return SessionRepository(db)
@@ -46,7 +46,7 @@ async def generate_strategy(session_id: str, custom_provider_url: str = None, re
     except FileNotFoundError:
         raise HTTPException(status_code=400, detail="Run analysis first.")
     except Exception as e:
-        raise HTTPException(status_code=502, detail=f"LLM Generation failed: {str(e)}")
+        raise HTTPException(status_code=502, detail=f"LLM Generation failed: {e!s}")
 
 @router.post("/{session_id}/validate-strategy", summary="Validate and apply strategy")
 async def validate_strategy(session_id: str, request: StrategyApprovalRequest, repo: SessionRepository = Depends(get_repo)):

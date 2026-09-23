@@ -13,9 +13,8 @@ This module defines:
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
 
+from pydantic import BaseModel, Field
 
 # ── Issue Severity ────────────────────────────────────────────────────────────
 
@@ -101,7 +100,7 @@ class QualityIssue(BaseModel, frozen=True):
 
     severity: IssueSeverity = Field(..., description="How critical this issue is.")
     dimension: str = Field(..., description="Quality dimension (e.g., 'missing', 'duplicates').")
-    column: Optional[str] = Field(None, description="Affected column, if applicable.")
+    column: str | None = Field(None, description="Affected column, if applicable.")
     message: str = Field(..., description="Human-readable description.")
 
 
@@ -127,10 +126,10 @@ class QualityReport(BaseModel, frozen=True):
     metrics_after:  DataQualityMetrics = Field(..., description="Full metrics snapshot AFTER.")
 
     # Issues
-    remaining_issues:  List[QualityIssue] = Field(
+    remaining_issues:  list[QualityIssue] = Field(
         default_factory=list, description="Issues that still exist after cleaning.",
     )
-    critical_failures: List[QualityIssue] = Field(
+    critical_failures: list[QualityIssue] = Field(
         default_factory=list, description="Issues severe enough to mark the run as unsuccessful.",
     )
 

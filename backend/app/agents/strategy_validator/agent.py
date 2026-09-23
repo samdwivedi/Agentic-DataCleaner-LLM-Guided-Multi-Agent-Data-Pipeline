@@ -32,16 +32,15 @@ LLM output.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Set, Tuple
 
-from app.models.strategy import CleaningStrategy, CleaningAction, ActionRegistry
+from app.models.strategy import ActionRegistry, CleaningAction, CleaningStrategy
 from app.models.strategy_validator import (
+    ACTION_DTYPE_COMPATIBILITY,
     SafetyThresholds,
     StrategyViolation,
     ValidatedCleaningStrategy,
     ViolationCode,
     ViolationSeverity,
-    ACTION_DTYPE_COMPATIBILITY,
 )
 
 logger = logging.getLogger(__name__)
@@ -89,8 +88,8 @@ class StrategyValidator:
 
     def __init__(
         self,
-        known_columns: Set[str],
-        column_types: Dict[str, str],
+        known_columns: set[str],
+        column_types: dict[str, str],
         total_row_count: int,
         thresholds: SafetyThresholds | None = None,
     ):
@@ -137,7 +136,7 @@ class StrategyValidator:
                 validator_version=_VALIDATOR_VERSION,
             )
 
-        violations: List[StrategyViolation] = []
+        violations: list[StrategyViolation] = []
 
         # ── Per-action checks ─────────────────────────────────────────────
         for action in strategy.actions:
@@ -189,7 +188,7 @@ class StrategyValidator:
     # ── Per-Action Checks ─────────────────────────────────────────────────────
 
     def _check_required_fields(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Ensure every required field is present and non-empty."""
         action_dict = action.model_dump()
@@ -207,7 +206,7 @@ class StrategyValidator:
                 )
 
     def _check_action_allowed(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Verify the action value is in the ActionRegistry enum."""
         try:
@@ -224,7 +223,7 @@ class StrategyValidator:
             )
 
     def _check_column_exists(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Verify the target column actually exists in the dataset."""
         if action.column not in self.known_columns:
@@ -240,7 +239,7 @@ class StrategyValidator:
             )
 
     def _check_dtype_compatibility(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Verify the action is type-compatible with the target column."""
         action_str = action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
@@ -270,7 +269,7 @@ class StrategyValidator:
             )
 
     def _check_parameters(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Validate action-specific parameters."""
         action_str = action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
@@ -317,7 +316,7 @@ class StrategyValidator:
                     )
 
     def _check_confidence(
-        self, action: CleaningAction, violations: List[StrategyViolation]
+        self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Ensure confidence is within the configured bounds."""
         if action.confidence < self.thresholds.min_confidence:
@@ -350,7 +349,7 @@ class StrategyValidator:
     # ── Cross-Action Checks ───────────────────────────────────────────────────
 
     def _check_row_drop_limit(
-        self, actions: List[CleaningAction], violations: List[StrategyViolation]
+        self, actions: list[CleaningAction], violations: list[StrategyViolation]
     ) -> None:
         """Ensure combined row-drop actions don't exceed the safe percentage."""
         drop_row_actions = [a for a in actions if a.action in _ROW_DROP_ACTIONS]
@@ -385,7 +384,7 @@ class StrategyValidator:
             )
 
     def _check_column_drop_limit(
-        self, actions: List[CleaningAction], violations: List[StrategyViolation]
+        self, actions: list[CleaningAction], violations: list[StrategyViolation]
     ) -> None:
         """Ensure total column-drop count doesn't exceed the threshold."""
         drop_cols = [a for a in actions if a.action in _COL_DROP_ACTIONS]
@@ -402,7 +401,7 @@ class StrategyValidator:
             )
 
     def _check_transformation_scope(
-        self, actions: List[CleaningAction], violations: List[StrategyViolation]
+        self, actions: list[CleaningAction], violations: list[StrategyViolation]
     ) -> None:
         """Ensure the strategy doesn't touch too many columns at once."""
         if not self.known_columns:
@@ -425,10 +424,10 @@ class StrategyValidator:
             )
 
     def _check_duplicate_actions(
-        self, actions: List[CleaningAction], violations: List[StrategyViolation]
+        self, actions: list[CleaningAction], violations: list[StrategyViolation]
     ) -> None:
         """Flag identical (column, action) pairs."""
-        seen: Set[Tuple[str, str]] = set()
+        seen: set[tuple[str, str]] = set()
         for a in actions:
             action_str = a.action.value if isinstance(a.action, ActionRegistry) else str(a.action)
             key = (a.column, action_str)
@@ -445,7 +444,7 @@ class StrategyValidator:
             seen.add(key)
 
     def _check_conflicting_actions(
-        self, actions: List[CleaningAction], violations: List[StrategyViolation]
+        self, actions: list[CleaningAction], violations: list[StrategyViolation]
     ) -> None:
         """
         Detect logically conflicting actions on the same column.
@@ -454,7 +453,7 @@ class StrategyValidator:
           - A column cannot be both dropped AND transformed.
         """
         # Group actions by column
-        col_actions: Dict[str, List[ActionRegistry]] = {}
+        col_actions: dict[str, list[ActionRegistry]] = {}
         for a in actions:
             col_actions.setdefault(a.column, []).append(a.action)
 

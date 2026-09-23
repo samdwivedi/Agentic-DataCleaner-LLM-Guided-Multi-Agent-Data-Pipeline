@@ -38,11 +38,9 @@ falls below the configured minimum.
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional
 
 import numpy as np
 import pandas as pd
-
 from app.models.quality import (
     DataQualityMetrics,
     IssueSeverity,
@@ -79,8 +77,8 @@ class QualityAssessor:
         self,
         df_before: pd.DataFrame,
         df_after: pd.DataFrame,
-        expected_dtypes: Dict[str, str] | None = None,
-        allowed_categories: Dict[str, list] | None = None,
+        expected_dtypes: dict[str, str] | None = None,
+        allowed_categories: dict[str, list] | None = None,
     ) -> QualityReport:
         """
         Compare two DataFrames (before and after cleaning) and produce a
@@ -170,8 +168,8 @@ class QualityAssessor:
     def score_dataframe(
         self,
         df: pd.DataFrame,
-        expected_dtypes: Dict[str, str] | None = None,
-        allowed_categories: Dict[str, list] | None = None,
+        expected_dtypes: dict[str, str] | None = None,
+        allowed_categories: dict[str, list] | None = None,
     ) -> DataQualityMetrics:
         """Score a single DataFrame (convenience method)."""
         metrics = self._compute_metrics(df, expected_dtypes, allowed_categories)
@@ -185,8 +183,8 @@ class QualityAssessor:
     def _compute_metrics(
         self,
         df: pd.DataFrame,
-        expected_dtypes: Dict[str, str] | None = None,
-        allowed_categories: Dict[str, list] | None = None,
+        expected_dtypes: dict[str, str] | None = None,
+        allowed_categories: dict[str, list] | None = None,
     ) -> DataQualityMetrics:
         """Compute raw quality metrics for a single DataFrame."""
 
@@ -320,11 +318,11 @@ class QualityAssessor:
         self,
         df_after: pd.DataFrame,
         metrics_after: DataQualityMetrics,
-        allowed_categories: Dict[str, list] | None = None,
-    ) -> List[QualityIssue]:
+        allowed_categories: dict[str, list] | None = None,
+    ) -> list[QualityIssue]:
         """Scan the post-cleaning DataFrame for remaining quality issues."""
 
-        issues: List[QualityIssue] = []
+        issues: list[QualityIssue] = []
 
         # ── Missing values ────────────────────────────────────────────────
         for col in df_after.columns:
@@ -388,7 +386,7 @@ class QualityAssessor:
         m_after: DataQualityMetrics,
         score_before: float,
         score_after: float,
-    ) -> List[QualityIssue]:
+    ) -> list[QualityIssue]:
         """
         Detect conditions that **must** mark the run as unsuccessful.
 
@@ -400,7 +398,7 @@ class QualityAssessor:
         5. All columns were deleted.
         6. Post-cleaning score is below minimum acceptable.
         """
-        criticals: List[QualityIssue] = []
+        criticals: list[QualityIssue] = []
 
         # 1. Score decreased
         if score_after < score_before:

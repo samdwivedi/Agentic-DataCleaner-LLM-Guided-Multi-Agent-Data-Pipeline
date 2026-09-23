@@ -15,15 +15,13 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import List
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 from app.models.anomaly import (
     AnomalyConfig,
-    ColumnAnomalyResult,
     AnomalyReport,
+    ColumnAnomalyResult,
 )
 
 logger = logging.getLogger(__name__)
@@ -60,7 +58,7 @@ class AnomalyDetector:
 
         logger.info("AnomalyDetector.detect() → shape=%s", df.shape)
 
-        column_reports: List[ColumnAnomalyResult] = []
+        column_reports: list[ColumnAnomalyResult] = []
         total_rows = len(df)
         total_outliers_found = 0
         columns_analyzed = 0

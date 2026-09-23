@@ -20,18 +20,16 @@ Usage
 
 from __future__ import annotations
 
-import math
 import logging
+import math
 from collections import Counter
 from datetime import datetime, timezone
-from typing import Any, Dict, List, Optional
 
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 from app.models.profiler import (
-    CategoryFrequency,
     CategoricalStats,
+    CategoryFrequency,
     ColumnProfile,
     DatasetMeta,
     DuplicateInfo,
@@ -117,7 +115,7 @@ class ProfilerAgent:
         duplicates = self._build_duplicate_info(work)
 
         # ── Per-column profiles ───────────────────────────────────────────────
-        col_profiles: List[ColumnProfile] = [
+        col_profiles: list[ColumnProfile] = [
             self._profile_column(work[col], meta.row_count)
             for col in work.columns
         ]
@@ -219,10 +217,10 @@ class ProfilerAgent:
         inferred = self._infer_type(series, unique_cnt, non_null_cnt, dtype_kind)
 
         # Numeric stats
-        numerical_stats:   Optional[NumericalStats]   = None
-        categorical_stats: Optional[CategoricalStats] = None
-        value_min: Optional[str] = None
-        value_max: Optional[str] = None
+        numerical_stats:   NumericalStats | None   = None
+        categorical_stats: CategoricalStats | None = None
+        value_min: str | None = None
+        value_max: str | None = None
 
         # Treat booleans as categorical (not numeric)
         is_bool = series.dtype == bool or dtype_str in ("bool", "boolean")
@@ -264,7 +262,7 @@ class ProfilerAgent:
         self,
         non_null: pd.Series,
         row_count: int,
-    ) -> tuple[NumericalStats, Optional[str], Optional[str]]:
+    ) -> tuple[NumericalStats, str | None, str | None]:
         """
         Compute comprehensive numerical statistics.
         Returns (NumericalStats, value_min_str, value_max_str).
@@ -367,7 +365,7 @@ class ProfilerAgent:
         # Value counts
         vc = non_null.value_counts(dropna=True)
 
-        top_values: List[CategoryFrequency] = [
+        top_values: list[CategoryFrequency] = [
             CategoryFrequency(
                 value=val,
                 count=int(cnt),
@@ -376,7 +374,7 @@ class ProfilerAgent:
             for val, cnt in vc.head(self._top_n).items()
         ]
 
-        least_values: List[CategoryFrequency] = [
+        least_values: list[CategoryFrequency] = [
             CategoryFrequency(
                 value=val,
                 count=int(cnt),
@@ -474,8 +472,8 @@ class ProfilerAgent:
     # ── Problematic column detection ──────────────────────────────────────────
 
     def _detect_problematic(
-        self, profiles: List[ColumnProfile]
-    ) -> List[ProblematicColumn]:
+        self, profiles: list[ColumnProfile]
+    ) -> list[ProblematicColumn]:
         """
         Scan all column profiles and accumulate data-quality flags.
 
@@ -490,10 +488,10 @@ class ProfilerAgent:
         7. All-null column     (100 % missing)
         8. Potential ID column flagged for review
         """
-        results: List[ProblematicColumn] = []
+        results: list[ProblematicColumn] = []
 
         for col in profiles:
-            reasons: List[str] = []
+            reasons: list[str] = []
 
             # All-null
             if col.missing_count == col.row_count:

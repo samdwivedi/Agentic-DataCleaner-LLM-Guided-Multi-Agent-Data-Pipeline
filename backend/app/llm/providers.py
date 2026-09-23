@@ -9,10 +9,9 @@ from __future__ import annotations
 
 import json
 import logging
-import httpx
 from abc import ABC, abstractmethod
-from typing import Dict, Any
 
+import httpx
 from app.models.strategy import StrategistConfig
 
 logger = logging.getLogger(__name__)
@@ -30,7 +29,6 @@ class BaseLLMProvider(ABC):
         Sends the prompts to the LLM and returns the raw string response.
         Should handle its own network timeouts and raise exceptions on hard failures.
         """
-        pass
 
 
 class OllamaProvider(BaseLLMProvider):
@@ -61,7 +59,7 @@ class OllamaProvider(BaseLLMProvider):
             raise RuntimeError(f"LLM Provider Timeout ({self.config.timeout_seconds}s)")
         except httpx.RequestError as e:
             logger.error("Ollama API request failed: %s", e)
-            raise RuntimeError(f"LLM Provider Request Failed: {str(e)}")
+            raise RuntimeError(f"LLM Provider Request Failed: {e!s}")
         except json.JSONDecodeError:
             logger.error("Failed to decode JSON response from Ollama API.")
             raise RuntimeError("LLM Provider returned invalid JSON in API envelope.")

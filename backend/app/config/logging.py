@@ -18,12 +18,11 @@ from __future__ import annotations
 
 import logging
 import logging.handlers
+import os
 import sys
-from pathlib import Path
 
-import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-from config import LOG_DIR, LOG_LEVEL, LOG_FILE, LOG_MAX_BYTES, LOG_BACKUP_COUNT
+from config import LOG_BACKUP_COUNT, LOG_DIR, LOG_FILE, LOG_LEVEL, LOG_MAX_BYTES
 
 # ── ANSI colour codes for console output ─────────────────────────────────────
 _COLOURS = {

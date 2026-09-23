@@ -1,13 +1,13 @@
 import logging
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import os
 
+import app.persistence.models  # Important: Register models before create_all
 from app.api.routes import datasets
 from app.config.logging import setup_logging
-from app.persistence.database import engine, Base
-import app.persistence.models  # Important: Register models before create_all
+from app.persistence.database import Base, engine
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):

@@ -14,9 +14,9 @@ plus before/after metadata.  The original DataFrame is NEVER modified.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ── Execution Status ──────────────────────────────────────────────────────────
 
@@ -50,7 +50,7 @@ class ExecutionLogEntry(BaseModel, frozen=True):
     action: str = Field(
         ..., description="The action that was executed (e.g. 'median_imputation').",
     )
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Parameters passed to the operation.",
     )
     rows_affected: int = Field(
@@ -59,18 +59,18 @@ class ExecutionLogEntry(BaseModel, frozen=True):
     values_changed: int = Field(
         0, description="Number of individual cell values that were changed.",
     )
-    before_state: Dict[str, Any] = Field(
+    before_state: dict[str, Any] = Field(
         default_factory=dict,
         description="Snapshot of relevant column statistics BEFORE the operation.",
     )
-    after_state: Dict[str, Any] = Field(
+    after_state: dict[str, Any] = Field(
         default_factory=dict,
         description="Snapshot of relevant column statistics AFTER the operation.",
     )
     execution_status: ExecutionStatus = Field(
         ExecutionStatus.SUCCESS, description="Outcome of this operation.",
     )
-    error_message: Optional[str] = Field(
+    error_message: str | None = Field(
         None, description="Error details if execution_status is FAILED.",
     )
     reason: str = Field(
@@ -118,7 +118,7 @@ class ExecutionResult(BaseModel, frozen=True):
     total_columns_after: int = Field(
         0, description="Column count after execution.",
     )
-    log_entries: List[ExecutionLogEntry] = Field(
+    log_entries: list[ExecutionLogEntry] = Field(
         default_factory=list, description="Per-action execution log entries.",
     )
     executor_version: str = Field(

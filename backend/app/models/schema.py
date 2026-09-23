@@ -9,16 +9,16 @@ All report models are immutable (frozen=True).
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ── Configuration Models ──────────────────────────────────────────────────────
 
 class ColumnRule(BaseModel):
     """Configuration rules for a single DataFrame column."""
     
-    expected_dtype: Optional[str] = Field(
+    expected_dtype: str | None = Field(
         None, description="Expected pandas dtype (e.g., 'int64', 'float64', 'object', 'bool', 'datetime64[ns]')."
     )
     nullable: bool = Field(
@@ -27,22 +27,22 @@ class ColumnRule(BaseModel):
     unique: bool = Field(
         False, description="Whether all non-null values in the column must be unique."
     )
-    min_value: Optional[float] = Field(
+    min_value: float | None = Field(
         None, description="Minimum allowed numeric value (inclusive)."
     )
-    max_value: Optional[float] = Field(
+    max_value: float | None = Field(
         None, description="Maximum allowed numeric value (inclusive)."
     )
-    allowed_values: Optional[List[Any]] = Field(
+    allowed_values: list[Any] | None = Field(
         None, description="List of strictly allowed categorical values."
     )
-    regex_pattern: Optional[str] = Field(
+    regex_pattern: str | None = Field(
         None, description="Regex pattern that all non-null string values must match."
     )
-    min_date: Optional[str] = Field(
+    min_date: str | None = Field(
         None, description="Minimum allowed date (inclusive), as ISO string (e.g., '2020-01-01')."
     )
-    max_date: Optional[str] = Field(
+    max_date: str | None = Field(
         None, description="Maximum allowed date (inclusive), as ISO string (e.g., '2025-12-31')."
     )
 
@@ -50,10 +50,10 @@ class ColumnRule(BaseModel):
 class ValidationSchema(BaseModel):
     """Complete schema definition for a DataFrame."""
     
-    required_columns: List[str] = Field(
+    required_columns: list[str] = Field(
         default_factory=list, description="List of column names that must exist in the DataFrame."
     )
-    columns: Dict[str, ColumnRule] = Field(
+    columns: dict[str, ColumnRule] = Field(
         default_factory=dict, description="Mapping of column names to their specific validation rules."
     )
 
@@ -63,7 +63,7 @@ class ValidationSchema(BaseModel):
 class ValidationViolation(BaseModel, frozen=True):
     """Represents a single rule violation detected during validation."""
     
-    column: Optional[str] = Field(
+    column: str | None = Field(
         None, description="The column where the violation occurred, if applicable."
     )
     rule: str = Field(
@@ -88,7 +88,7 @@ class SchemaReport(BaseModel, frozen=True):
     columns_checked: int = Field(
         ..., description="Total number of columns checked against the schema."
     )
-    violations: List[ValidationViolation] = Field(
+    violations: list[ValidationViolation] = Field(
         default_factory=list, description="List of all detected violations."
     )
     validated_at: str = Field(

@@ -10,17 +10,16 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Dict, Optional
+from typing import Any
 
-from pydantic import ValidationError
-
-from app.models.strategy import StrategistConfig, CleaningStrategy
 from app.agents.strategist.prompts import (
-    STRATEGIST_SYSTEM_PROMPT,
     PROMPT_VERSION,
+    STRATEGIST_SYSTEM_PROMPT,
     build_strategist_prompt,
 )
 from app.llm.providers import BaseLLMProvider, OllamaProvider
+from app.models.strategy import CleaningStrategy, StrategistConfig
+from pydantic import ValidationError
 
 logger = logging.getLogger(__name__)
 
@@ -35,10 +34,10 @@ class StrategistAgent:
 
     def generate_strategy(
         self, 
-        profiler_report_dict: Dict[str, Any], 
-        schema_report_dict: Dict[str, Any], 
-        anomaly_report_dict: Dict[str, Any],
-        user_config: Optional[Dict[str, Any]] = None,
+        profiler_report_dict: dict[str, Any], 
+        schema_report_dict: dict[str, Any], 
+        anomaly_report_dict: dict[str, Any],
+        user_config: dict[str, Any] | None = None,
     ) -> CleaningStrategy:
         """
         Takes deterministic reports (dicts), sends them to the LLM, and 
@@ -83,12 +82,9 @@ class StrategistAgent:
                     # The model might include markdown code blocks despite instructions, 
                     # so we strip them just in case.
                     clean_response = raw_response.strip()
-                    if clean_response.startswith("```json"):
-                        clean_response = clean_response[7:]
-                    if clean_response.startswith("```"):
-                        clean_response = clean_response[3:]
-                    if clean_response.endswith("```"):
-                        clean_response = clean_response[:-3]
+                    clean_response = clean_response.removeprefix("```json")
+                    clean_response = clean_response.removeprefix("```")
+                    clean_response = clean_response.removesuffix("```")
                         
                     parsed_json = json.loads(clean_response)
                 except json.JSONDecodeError as e:

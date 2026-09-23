@@ -7,14 +7,15 @@ that the FastAPI routes call. Keeps all core agent logic untouched.
 
 from __future__ import annotations
 
-import sys, os, time, uuid
+import os
+import sys
+import time
+
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from typing import Any
 from agent.logger import get_logger
-from config import (
-    OPENAI_API_KEY, OPENAI_MODEL, TEMPERATURE, MAX_TOKENS, DEFAULT_TOOLS
-)
+
+from config import DEFAULT_TOOLS, MAX_TOKENS, OPENAI_API_KEY, OPENAI_MODEL, TEMPERATURE
 
 logger = get_logger(__name__)
 
@@ -62,8 +63,8 @@ def run_agent(query: str, chat_id: str | None = None) -> dict:
 
     # ── Build agent using LangGraph ───────────────────────────────────────────
     try:
-        from langgraph.prebuilt import create_react_agent
         from langchain_core.messages import HumanMessage
+        from langgraph.prebuilt import create_react_agent
 
         system_prompt = (
             "You are an advanced AI Research Agent with access to web search, "
@@ -162,7 +163,8 @@ def _stub_response(query: str, tools: list) -> dict:
     Offline stub – returned when no OPENAI_API_KEY is set.
     Useful for frontend / UI testing without burning API credits.
     """
-    import random, time
+    import random
+    import time
     time.sleep(0.5)   # simulate latency
     tool_names = [t.name for t in tools]
     used = random.sample(tool_names, k=min(2, len(tool_names)))

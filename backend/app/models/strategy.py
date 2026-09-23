@@ -8,9 +8,9 @@ defining the strictly constrained JSON output (CleaningStrategy).
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ── Action Registry (Strict Enums) ────────────────────────────────────────────
 
@@ -43,7 +43,7 @@ class CleaningAction(BaseModel):
     action: ActionRegistry = Field(
         ..., description="The specific cleaning action to apply."
     )
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Optional parameters for the action (e.g., {'value': 0})."
     )
     reason: str = Field(
@@ -57,13 +57,13 @@ class CleaningAction(BaseModel):
 class CleaningStrategy(BaseModel):
     """The complete output strategy containing all proposed actions."""
     
-    actions: List[CleaningAction] = Field(
+    actions: list[CleaningAction] = Field(
         default_factory=list, description="List of proposed cleaning actions."
     )
     status: str = Field(
         "success", description="Status of the strategy generation ('success' or 'error')."
     )
-    error_message: Optional[str] = Field(
+    error_message: str | None = Field(
         None, description="Error details if the LLM provider failed."
     )
 

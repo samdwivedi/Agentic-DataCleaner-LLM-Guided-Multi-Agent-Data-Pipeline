@@ -14,16 +14,13 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
-from typing import List
 
 import pandas as pd
-import numpy as np
-
 from app.models.schema import (
     ColumnRule,
+    SchemaReport,
     ValidationSchema,
     ValidationViolation,
-    SchemaReport,
 )
 
 logger = logging.getLogger(__name__)
@@ -60,7 +57,7 @@ class SchemaValidator:
 
         logger.info("SchemaValidator.validate() → shape=%s", df.shape)
 
-        violations: List[ValidationViolation] = []
+        violations: list[ValidationViolation] = []
         rows_checked = len(df)
         columns_checked = 0
 
@@ -110,7 +107,7 @@ class SchemaValidator:
         col_name: str, 
         series: pd.Series, 
         rule: ColumnRule, 
-        violations: List[ValidationViolation]
+        violations: list[ValidationViolation]
     ) -> None:
         """Apply a ColumnRule to a specific pandas Series, accumulating violations."""
         
@@ -248,7 +245,7 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="date_validity",
-                        message=f"Error evaluating date constraints: {str(e)}"
+                        message=f"Error evaluating date constraints: {e!s}"
                     )
                 )
 
@@ -273,7 +270,7 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="regex_pattern",
-                        message=f"Error applying regex pattern: {str(e)}"
+                        message=f"Error applying regex pattern: {e!s}"
                     )
                 )
                 

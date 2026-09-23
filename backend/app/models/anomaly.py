@@ -9,9 +9,7 @@ All report models are immutable (frozen=True).
 
 from __future__ import annotations
 
-from typing import List, Optional
 from pydantic import BaseModel, Field
-
 
 # ── Configuration Models ──────────────────────────────────────────────────────
 
@@ -56,18 +54,18 @@ class ColumnAnomalyResult(BaseModel, frozen=True):
     )
     
     # Boundary thresholds (optional, depending on methods used)
-    iqr_lower_bound: Optional[float] = Field(
+    iqr_lower_bound: float | None = Field(
         None, description="The calculated lower boundary for IQR-based detection."
     )
-    iqr_upper_bound: Optional[float] = Field(
+    iqr_upper_bound: float | None = Field(
         None, description="The calculated upper boundary for IQR-based detection."
     )
-    zscore_threshold_used: Optional[float] = Field(
+    zscore_threshold_used: float | None = Field(
         None, description="The Z-score threshold applied to this column."
     )
     
     # For robust z-score vs standard z-score
-    is_robust_zscore: Optional[bool] = Field(
+    is_robust_zscore: bool | None = Field(
         None, description="True if robust Z-score (MAD) was used, False if standard (STD)."
     )
 
@@ -87,7 +85,7 @@ class AnomalyReport(BaseModel, frozen=True):
     total_outliers_found: int = Field(
         ..., description="Sum of outlier counts across all analyzed columns."
     )
-    column_reports: List[ColumnAnomalyResult] = Field(
+    column_reports: list[ColumnAnomalyResult] = Field(
         default_factory=list, description="Per-column anomaly detection results."
     )
     analyzed_at: str = Field(

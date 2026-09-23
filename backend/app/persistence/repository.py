@@ -1,6 +1,9 @@
-from typing import Any, Dict, Optional
+from typing import Any
+
 from sqlalchemy.orm import Session
+
 from .models import PipelineSession
+
 
 class SessionRepository:
     def __init__(self, db: Session):
@@ -19,7 +22,7 @@ class SessionRepository:
         self.db.refresh(db_session)
         return db_session
 
-    def update_report(self, session_id: str, report_type: str, report_data: Dict[str, Any]) -> None:
+    def update_report(self, session_id: str, report_type: str, report_data: dict[str, Any]) -> None:
         """
         Updates one of the JSON report columns.
         report_type should match the column name (e.g. 'profiler_report').
@@ -28,7 +31,7 @@ class SessionRepository:
         setattr(db_session, report_type, report_data)
         self.db.commit()
 
-    def get_report(self, session_id: str, report_type: str) -> Optional[Dict[str, Any]]:
+    def get_report(self, session_id: str, report_type: str) -> dict[str, Any] | None:
         db_session = self.get_session(session_id)
         report = getattr(db_session, report_type)
         if report is None:

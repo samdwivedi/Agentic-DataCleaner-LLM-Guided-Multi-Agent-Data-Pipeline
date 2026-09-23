@@ -1,5 +1,7 @@
-from sqlalchemy import Column, String, LargeBinary, JSON
+from sqlalchemy import JSON, Column, LargeBinary, String
+
 from .database import Base
+
 
 class PipelineSession(Base):
     __tablename__ = "pipeline_sessions"

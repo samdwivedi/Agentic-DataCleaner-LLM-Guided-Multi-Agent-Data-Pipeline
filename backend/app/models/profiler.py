@@ -15,9 +15,9 @@ Design rules
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional
-from pydantic import BaseModel, Field
+from typing import Any
 
+from pydantic import BaseModel, Field
 
 # ── Numerical statistics ──────────────────────────────────────────────────────
 
@@ -57,22 +57,22 @@ class CategoryFrequency(BaseModel, frozen=True):
 class CategoricalStats(BaseModel, frozen=True):
     """Frequency-based statistics for object/categorical columns."""
 
-    top_values:       List[CategoryFrequency] = Field(
+    top_values:       list[CategoryFrequency] = Field(
         ..., description="Top-N most frequent values (default N=10)."
     )
-    least_values:     List[CategoryFrequency] = Field(
+    least_values:     list[CategoryFrequency] = Field(
         ..., description="Bottom-N least frequent values (default N=5)."
     )
-    mode:             Optional[Any]  = Field(None, description="Most frequent single value.")
+    mode:             Any | None  = Field(None, description="Most frequent single value.")
     mode_count:       int            = Field(0,    description="Occurrences of the mode.")
     mode_frequency:   float          = Field(0.0,  description="Mode frequency as a fraction (0–1).")
-    avg_str_length:   Optional[float] = Field(
+    avg_str_length:   float | None = Field(
         None, description="Mean string length (only for str-typed columns)."
     )
-    max_str_length:   Optional[int] = Field(
+    max_str_length:   int | None = Field(
         None, description="Maximum string length encountered."
     )
-    min_str_length:   Optional[int] = Field(
+    min_str_length:   int | None = Field(
         None, description="Minimum string length encountered."
     )
 
@@ -96,7 +96,7 @@ class ProblematicColumn(BaseModel, frozen=True):
     """
 
     column:  str       = Field(..., description="Column name.")
-    reasons: List[str] = Field(..., description="Human-readable list of detected issues.")
+    reasons: list[str] = Field(..., description="Human-readable list of detected issues.")
 
 
 # ── Per-column profile ────────────────────────────────────────────────────────
@@ -120,18 +120,18 @@ class ColumnProfile(BaseModel, frozen=True):
     unique_pct:    float = Field(..., description="Unique / non-null ratio × 100.")
 
     # Type-specific stats (mutually exclusive)
-    numerical_stats:   Optional[NumericalStats]   = Field(
+    numerical_stats:   NumericalStats | None   = Field(
         None, description="Set for numeric columns; None otherwise."
     )
-    categorical_stats: Optional[CategoricalStats] = Field(
+    categorical_stats: CategoricalStats | None = Field(
         None, description="Set for object/category/bool columns; None otherwise."
     )
 
     # Min / max expressed as strings so they work for both types
-    value_min: Optional[str] = Field(
+    value_min: str | None = Field(
         None, description="String representation of the minimum value."
     )
-    value_max: Optional[str] = Field(
+    value_max: str | None = Field(
         None, description="String representation of the maximum value."
     )
 
@@ -167,7 +167,7 @@ class DatasetMeta(BaseModel, frozen=True):
     boolean_column_count:      int = Field(..., description="Number of boolean columns.")
     other_column_count:        int = Field(..., description="Columns not in above categories.")
 
-    dtypes_summary: Dict[str, int] = Field(
+    dtypes_summary: dict[str, int] = Field(
         ..., description="Mapping of dtype-string → column count."
     )
 
@@ -183,9 +183,9 @@ class ProfilerReport(BaseModel, frozen=True):
     """
 
     meta:             DatasetMeta           = Field(..., description="Dataset-level metadata.")
-    columns:          List[ColumnProfile]   = Field(..., description="Per-column profiles.")
+    columns:          list[ColumnProfile]   = Field(..., description="Per-column profiles.")
     duplicates:       DuplicateInfo         = Field(..., description="Duplicate-row analysis.")
-    problematic:      List[ProblematicColumn] = Field(
+    problematic:      list[ProblematicColumn] = Field(
         ..., description="Columns flagged for data quality issues."
     )
     profiler_version: str = Field(
@@ -197,22 +197,22 @@ class ProfilerReport(BaseModel, frozen=True):
 
     # ── Convenience helpers ───────────────────────────────────────────────────
 
-    def column(self, name: str) -> Optional[ColumnProfile]:
+    def column(self, name: str) -> ColumnProfile | None:
         """Return the ColumnProfile for *name*, or None if not found."""
         for col in self.columns:
             if col.name == name:
                 return col
         return None
 
-    def numeric_columns(self) -> List[ColumnProfile]:
+    def numeric_columns(self) -> list[ColumnProfile]:
         """Return all numeric column profiles."""
         return [c for c in self.columns if c.numerical_stats is not None]
 
-    def categorical_columns(self) -> List[ColumnProfile]:
+    def categorical_columns(self) -> list[ColumnProfile]:
         """Return all categorical column profiles."""
         return [c for c in self.columns if c.categorical_stats is not None]
 
-    def high_missing(self, threshold: float = 50.0) -> List[ColumnProfile]:
+    def high_missing(self, threshold: float = 50.0) -> list[ColumnProfile]:
         """Return columns where missing % ≥ *threshold*."""
         return [c for c in self.columns if c.missing_pct >= threshold]
 

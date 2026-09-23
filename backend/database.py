@@ -12,16 +12,17 @@ This is SEPARATE from the agent's research database (data/research.db).
 
 from __future__ import annotations
 
-import sqlite3
 import json
+import os
+import sqlite3
+import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
 
-import sys, os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-from config import ROOT_DIR
 from agent.logger import get_logger
+
+from config import ROOT_DIR
 
 logger = get_logger(__name__)
 
@@ -101,13 +102,13 @@ def list_chats() -> list[dict]:
     return [dict(r) for r in rows]
 
 
-def get_chat(chat_id: str) -> Optional[dict]:
+def get_chat(chat_id: str) -> dict | None:
     with _connect() as conn:
         row = conn.execute("SELECT * FROM chats WHERE id=?", (chat_id,)).fetchone()
     return dict(row) if row else None
 
 
-def touch_chat(chat_id: str, title: Optional[str] = None) -> None:
+def touch_chat(chat_id: str, title: str | None = None) -> None:
     now = datetime.utcnow().isoformat()
     with _connect() as conn:
         if title:
@@ -125,9 +126,9 @@ def save_message(
     chat_id: str,
     role: str,
     content: str,
-    sources: Optional[list] = None,
-    confidence: Optional[float] = None,
-    tools_used: Optional[list] = None,
+    sources: list | None = None,
+    confidence: float | None = None,
+    tools_used: list | None = None,
 ) -> dict:
     now = datetime.utcnow().isoformat()
     with _connect() as conn:
@@ -186,7 +187,7 @@ def log_tool(message_id: str, tool_name: str, success: bool, duration_ms: float)
 
 # ── Feedback helpers ──────────────────────────────────────────────────────────
 
-def save_feedback(message_id: str, rating: str, comment: Optional[str] = None) -> dict:
+def save_feedback(message_id: str, rating: str, comment: str | None = None) -> dict:
     now = datetime.utcnow().isoformat()
     with _connect() as conn:
         cur = conn.execute(

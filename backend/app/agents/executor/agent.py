@@ -27,16 +27,15 @@ from __future__ import annotations
 
 import logging
 import uuid
-from typing import Any, Dict, List, Tuple
+from typing import Any
 
 import pandas as pd
-
-from app.models.strategy_validator import ValidatedCleaningStrategy
 from app.models.execution import (
     ExecutionLogEntry,
     ExecutionResult,
     ExecutionStatus,
 )
+from app.models.strategy_validator import ValidatedCleaningStrategy
 from app.operations.operations import OPERATION_DISPATCH
 
 logger = logging.getLogger(__name__)
@@ -59,7 +58,7 @@ class ExecutorAgent:
         self,
         df: pd.DataFrame,
         strategy: ValidatedCleaningStrategy,
-    ) -> Tuple[pd.DataFrame, ExecutionResult]:
+    ) -> tuple[pd.DataFrame, ExecutionResult]:
         """
         Apply every action in *strategy* to a **copy** of *df*.
 
@@ -101,7 +100,7 @@ class ExecutorAgent:
 
         # ── Work on a copy ────────────────────────────────────────────────
         working_df = df.copy()
-        log_entries: List[ExecutionLogEntry] = []
+        log_entries: list[ExecutionLogEntry] = []
         success_count = 0
         skip_count = 0
         fail_count = 0
@@ -236,12 +235,12 @@ class ExecutorAgent:
     # ── Helpers ───────────────────────────────────────────────────────────────
 
     @staticmethod
-    def _snapshot(df: pd.DataFrame, column: str) -> Dict[str, Any]:
+    def _snapshot(df: pd.DataFrame, column: str) -> dict[str, Any]:
         """
         Capture a lightweight statistical snapshot of a column for the log.
         If the column doesn't exist (e.g. after a drop), return shape info only.
         """
-        snap: Dict[str, Any] = {
+        snap: dict[str, Any] = {
             "row_count": len(df),
             "column_count": len(df.columns),
         }
