@@ -14,8 +14,9 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from agent.executor import ExecutorAgent, ExecutionResult, ExecutionLogEntry, ExecutionStatus
-from agent.executor.operations import (
+from app.agents.executor.agent import ExecutorAgent
+from app.models.execution import ExecutionResult, ExecutionLogEntry, ExecutionStatus
+from app.operations.operations import (
     median_imputation,
     mean_imputation,
     mode_imputation,
@@ -30,7 +31,7 @@ from agent.executor.operations import (
     convert_datatype,
     noop,
 )
-from agent.strategy_validator.models import ValidatedCleaningStrategy
+from app.models.strategy_validator import ValidatedCleaningStrategy
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────

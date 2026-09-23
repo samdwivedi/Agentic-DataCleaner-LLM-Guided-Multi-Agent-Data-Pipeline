@@ -36,7 +36,7 @@ import pandas as pd
 import pytest
 
 # ── Import the public API ─────────────────────────────────────────────────────
-from agent.profiler import (
+from app.agents.profiler import (
     ProfilerAgent,
     ProfilerReport,
     ColumnProfile,
@@ -46,7 +46,7 @@ from agent.profiler import (
     DuplicateInfo,
     ProblematicColumn,
 )
-from agent.profiler.models import CategoryFrequency
+from app.models.profiler import CategoryFrequency
 
 
 # ─────────────────────────────────────────────────────────────────────────────

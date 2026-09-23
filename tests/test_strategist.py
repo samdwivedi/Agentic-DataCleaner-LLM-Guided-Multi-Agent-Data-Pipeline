@@ -13,15 +13,16 @@ from unittest.mock import MagicMock
 
 from pydantic import ValidationError
 
-from agent.strategist import (
-    StrategistAgent,
+from app.agents.strategist.agent import StrategistAgent
+from app.models.strategy import (
     StrategistConfig,
+ 
     CleaningStrategy,
     CleaningAction,
     ActionRegistry,
 )
-from agent.strategist.providers import BaseLLMProvider
-from agent.strategist.prompts import PROMPT_VERSION
+from app.llm.providers import BaseLLMProvider
+from app.agents.strategist.prompts import PROMPT_VERSION
 
 
 class MockLLMProvider(BaseLLMProvider):

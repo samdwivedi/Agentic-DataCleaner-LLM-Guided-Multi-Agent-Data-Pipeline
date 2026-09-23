@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from agent.anomaly import (
+from app.agents.anomaly_detector import (
     AnomalyDetector,
     AnomalyConfig,
     ColumnAnomalyResult,

@@ -13,8 +13,8 @@ from __future__ import annotations
 
 import pytest
 
-from agent.strategist.models import CleaningStrategy, CleaningAction, ActionRegistry
-from agent.strategy_validator import (
+from app.models.strategy import CleaningStrategy, CleaningAction, ActionRegistry
+from app.agents.strategy_validator import (
     StrategyValidator,
     SafetyThresholds,
     ValidatedCleaningStrategy,

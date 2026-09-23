@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from agent.quality import QualityAssessor, QualityConfig, IssueSeverity
+from app.agents.validator import QualityAssessor, QualityConfig, IssueSeverity
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

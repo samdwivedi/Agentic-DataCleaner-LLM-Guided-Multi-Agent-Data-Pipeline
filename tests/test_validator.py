@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import pytest
 
-from agent.validator import (
+from app.agents.schema_validator import (
     SchemaValidator,
     ValidationSchema,
     ColumnRule,

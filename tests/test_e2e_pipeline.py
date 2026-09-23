@@ -9,14 +9,46 @@ import os
 import pytest
 from unittest.mock import patch
 from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from backend.main import app
-from agent.strategist.models import CleaningStrategy
-from agent.strategy_validator.models import ValidatedCleaningStrategy
+from app.main import app as fastapi_app
+from app.models.strategy import CleaningStrategy
+from app.models.strategy_validator import ValidatedCleaningStrategy
+from app.persistence.database import Base, get_db
+from app.persistence.repository import SessionRepository
+import app.persistence.models  # Register models
 
-client = TestClient(app)
+# Set up SQLite database for testing
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+def override_get_db():
+    try:
+        db = TestingSessionLocal()
+        yield db
+    finally:
+        db.close()
+
+fastapi_app.dependency_overrides[get_db] = override_get_db
+
+# Create tables in the in-memory DB for tests
+Base.metadata.create_all(bind=engine)
+
+client = TestClient(fastapi_app)
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
+
+@pytest.fixture(autouse=True)
+def setup_database():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
+    try:
+        os.remove("test.db")
+    except OSError:
+        pass
 
 @pytest.fixture
 def synthetic_csv_content():
@@ -87,7 +119,7 @@ class TestPipelineEndToEnd:
         assert "anomaly" in analysis
 
         # 3. Strategy (Mocked LLM)
-        with patch("agent.strategist.engine.StrategistAgent.generate_strategy", return_value=mock_strategy):
+        with patch("app.agents.strategist.agent.StrategistAgent.generate_strategy", return_value=mock_strategy):
             response = client.post(f"/pipeline/{session_id}/strategy")
             assert response.status_code == 200
             strategy_data = response.json()
@@ -171,7 +203,7 @@ class TestPipelineEndToEnd:
         
         # Override the normal validator check just to force this into the executor
         # We'll use patch to make it look like it's valid
-        with patch("agent.strategy_validator.engine.StrategyValidator.validate") as mock_val:
+        with patch("app.agents.strategy_validator.agent.StrategyValidator.validate") as mock_val:
             mock_val.return_value = ValidatedCleaningStrategy(
                 is_valid=True,
                 actions=actions,
@@ -196,19 +228,16 @@ class TestPipelineEndToEnd:
         ).json()["session_id"]
         client.post(f"/pipeline/{session_id}/analyze")
 
-        # To simulate degradation, we'll execute a drop_column on a completely healthy column (id)
-        # Wait, id is a perfect column. Dropping it might decrease the score slightly.
-        # But a better way to ensure failure is if we replace original.csv and cleaned.csv
-        # so that cleaned is WORSE than original.
-
-        # Just for testing, we can write a worse file to cleaned.csv
         worse_csv = (
             "id,age,category\n"
             ",,\n" * 10
-        )
-        path = os.path.join(os.path.dirname(__file__), f"../data/sessions/{session_id}/cleaned.csv")
-        with open(path, "w") as f:
-            f.write(worse_csv)
+        ).encode("utf-8")
+        
+        # Override DB directly
+        db = TestingSessionLocal()
+        repo = SessionRepository(db)
+        repo.save_cleaned_csv(session_id, worse_csv)
+        db.close()
 
         response = client.post(f"/pipeline/{session_id}/validate-quality")
         assert response.status_code == 200
@@ -225,9 +254,10 @@ class TestPipelineEndToEnd:
             "/pipeline/upload", files={"file": ("test.csv", file_obj, "text/csv")}
         ).json()["session_id"]
         
-        path = os.path.join(os.path.dirname(__file__), f"../data/sessions/{session_id}/original.csv")
-        with open(path, "r") as f:
-            original_before = f.read()
+        db = TestingSessionLocal()
+        repo = SessionRepository(db)
+        original_before = repo.get_original_csv(session_id)
+        db.close()
 
         # Run pipeline up to execute
         client.post(f"/pipeline/{session_id}/analyze")
@@ -236,8 +266,9 @@ class TestPipelineEndToEnd:
         client.post(f"/pipeline/{session_id}/validate-strategy", json={"actions": actions})
         client.post(f"/pipeline/{session_id}/execute")
 
-        with open(path, "r") as f:
-            original_after = f.read()
+        db = TestingSessionLocal()
+        repo = SessionRepository(db)
+        original_after = repo.get_original_csv(session_id)
+        db.close()
             
         assert original_before == original_after
-
