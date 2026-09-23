@@ -9,7 +9,7 @@
 
 An AI-assisted, multi-agent data quality and cleaning platform that combines deterministic data engineering with LLM-based reasoning. 
 
-Data cleaning is often a tedious, repetitive task for data engineers. However, blindly giving raw datasets to Large Language Models (LLMs) is fundamentally unsafe—it risks hallucinated data, schema corruption, unpredictable transformations, and catastrophic data loss. 
+Data cleaning is often a tedious, repetitive task for data engineers. However, blindly giving raw datasets to Large Language Models (LLMs) is fundamentally unsafe it risks hallucinated data, schema corruption, unpredictable transformations, and catastrophic data loss. 
 
 This project solves this by enforcing a strict engineering principle: **"LLMs recommend; deterministic systems execute."** Raw datasets are never modified by or even sent to the LLM. Instead, a suite of deterministic agents profiles the data, extracts evidence, and passes statistical metadata to an LLM Strategist. The LLM acts purely as a reasoning engine to formulate a structured cleaning plan. That plan is then rigorously validated against safety thresholds before a deterministic Python executor performs the actual Pandas transformations.
 
@@ -114,7 +114,7 @@ The `ExecutorAgent` only performs pre-programmed, parameterized operations. Curr
 
 ```text
 ai-research-agent/
-├── agent/                  # Deterministic & LLM-based agent logic
+├── agent/                 
 │   ├── anomaly/
 │   ├── executor/
 │   ├── profiler/
@@ -122,17 +122,17 @@ ai-research-agent/
 │   ├── strategist/
 │   ├── strategy_validator/
 │   └── validator/
-├── backend/                # FastAPI application
+├── backend/               
 │   ├── main.py
 │   └── routes/
-│       └── pipeline.py     # E2E stateful pipeline orchestrator
-├── data/                   # Local session storage (auto-generated)
-├── frontend/               # Next.js interactive dashboard
+│       └── pipeline.py     
+├── data/                  
+├── frontend/              
 │   ├── app/
-│   │   ├── pipeline/       # Stepper UI for agent workflow
+│   │   ├── pipeline/       
 │   │   └── page.tsx        
 │   └── components/
-├── tests/                  # Pytest integration and E2E suites
+├── tests/                  
 ├── requirements.txt        
 └── config.py               
 ```
@@ -174,7 +174,7 @@ pip install -r requirements.txt
 cd backend
 uvicorn main:app --reload --port 8000
 ```
-*The API documentation will be available at `http://localhost:8000/docs`.*
+
 
 ### 3. Frontend Setup
 In a new terminal instance:
@@ -183,16 +183,10 @@ cd frontend
 npm install
 npm run dev
 ```
-*Navigate to `http://localhost:3000` to access the pipeline dashboard.*
 
-## 🧪 Testing
 
-The repository includes a rigorous Pytest suite simulating happy paths, dangerous strategies, LLM downtime, and executor failures.
 
-To run the end-to-end tests:
-```bash
-pytest tests/test_e2e_pipeline.py -v
-```
+
 
 ## 🔌 API Documentation (Pipeline Routes)
 
@@ -216,21 +210,3 @@ The backend exposes a stateful session-based architecture under `/pipeline`:
 | **Executor Operation Fails** | Executor traps Pandas errors, skips the failed step (maintaining original dataset), logs the error, and proceeds to the next valid action. |
 | **Quality Degradation** | `QualityAssessor` flags a negative delta; dashboard notifies the user that the strategy was ineffective. |
 
-## 🏭 Production Considerations
-
-While this architecture is robust, deploying it to enterprise production requires additional extensions:
-- **Stateless Storage:** Migrating local `data/sessions/` to AWS S3 / Azure Blob Storage.
-- **Distributed Processing:** Swapping the in-memory Pandas `ExecutorAgent` for Apache Spark or Ray.
-- **Asynchronous Queues:** Utilizing Celery or Redis for long-running LLM strategy generations.
-- **Authentication & RBAC:** Securing the FastAPI endpoints and Next.js frontend with OAuth2.
-
-## 🗺️ Roadmap
-
-- [x] **Phase 1-10:** Complete multi-agent pipeline and interactive Next.js dashboard.
-- [ ] **Phase 11:** Implement multi-table relational schema validation.
-- [ ] **Phase 12:** Add support for JSON, Parquet, and Excel inputs.
-- [ ] **Phase 13:** Integrate advanced ML-based anomaly detection (Isolation Forests).
-- [ ] **Phase 14:** Distributed data execution backend integration.
-
-## ⚖️ License
-License has not yet been specified.
