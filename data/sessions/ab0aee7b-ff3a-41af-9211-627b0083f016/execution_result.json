@@ -1,0 +1,74 @@
+{
+  "run_id": "386ddff1-bcbe-4def-9803-8f155c74b848",
+  "total_actions": 2,
+  "successful_actions": 1,
+  "skipped_actions": 0,
+  "failed_actions": 1,
+  "total_rows_before": 10,
+  "total_rows_after": 10,
+  "total_columns_before": 3,
+  "total_columns_after": 3,
+  "log_entries": [
+    {
+      "run_id": "386ddff1-bcbe-4def-9803-8f155c74b848",
+      "action_index": 0,
+      "column": "ghost",
+      "action": "median_imputation",
+      "parameters": {},
+      "rows_affected": 0,
+      "values_changed": 0,
+      "before_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": false
+      },
+      "after_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": false
+      },
+      "execution_status": "failed",
+      "error_message": "Column 'ghost' not found.",
+      "reason": "",
+      "confidence": 0.0
+    },
+    {
+      "run_id": "386ddff1-bcbe-4def-9803-8f155c74b848",
+      "action_index": 1,
+      "column": "age",
+      "action": "median_imputation",
+      "parameters": {},
+      "rows_affected": 2,
+      "values_changed": 2,
+      "before_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": true,
+        "dtype": "float64",
+        "null_count": 2,
+        "non_null_count": 8,
+        "mean": 75.25,
+        "median": 29.5,
+        "min": 25.0,
+        "max": 400.0
+      },
+      "after_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": true,
+        "dtype": "float64",
+        "null_count": 0,
+        "non_null_count": 10,
+        "mean": 66.1,
+        "median": 29.5,
+        "min": 25.0,
+        "max": 400.0
+      },
+      "execution_status": "success",
+      "error_message": null,
+      "reason": "",
+      "confidence": 0.0
+    }
+  ],
+  "executor_version": "1.0.0"
+}

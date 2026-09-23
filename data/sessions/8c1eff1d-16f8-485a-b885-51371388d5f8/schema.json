@@ -1,0 +1,42 @@
+{
+  "required_columns": [
+    "id",
+    "age",
+    "category"
+  ],
+  "columns": {
+    "id": {
+      "expected_dtype": "int64",
+      "nullable": true,
+      "unique": false,
+      "min_value": null,
+      "max_value": null,
+      "allowed_values": null,
+      "regex_pattern": null,
+      "min_date": null,
+      "max_date": null
+    },
+    "age": {
+      "expected_dtype": "float64",
+      "nullable": true,
+      "unique": false,
+      "min_value": null,
+      "max_value": null,
+      "allowed_values": null,
+      "regex_pattern": null,
+      "min_date": null,
+      "max_date": null
+    },
+    "category": {
+      "expected_dtype": "object",
+      "nullable": true,
+      "unique": false,
+      "min_value": null,
+      "max_value": null,
+      "allowed_values": null,
+      "regex_pattern": null,
+      "min_date": null,
+      "max_date": null
+    }
+  }
+}

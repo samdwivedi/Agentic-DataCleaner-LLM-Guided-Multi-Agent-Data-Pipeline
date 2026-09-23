@@ -10,12 +10,16 @@ from __future__ import annotations
 
 import json
 import logging
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from pydantic import ValidationError
 
 from agent.strategist.models import StrategistConfig, CleaningStrategy
-from agent.strategist.prompts import STRATEGIST_SYSTEM_PROMPT, build_strategist_prompt
+from agent.strategist.prompts import (
+    STRATEGIST_SYSTEM_PROMPT,
+    PROMPT_VERSION,
+    build_strategist_prompt,
+)
 from agent.strategist.providers import BaseLLMProvider, OllamaProvider
 
 logger = logging.getLogger(__name__)
@@ -33,19 +37,36 @@ class StrategistAgent:
         self, 
         profiler_report_dict: Dict[str, Any], 
         schema_report_dict: Dict[str, Any], 
-        anomaly_report_dict: Dict[str, Any]
+        anomaly_report_dict: Dict[str, Any],
+        user_config: Optional[Dict[str, Any]] = None,
     ) -> CleaningStrategy:
         """
         Takes deterministic reports (dicts), sends them to the LLM, and 
         returns a strongly-typed CleaningStrategy.
+        
+        Parameters
+        ----------
+        profiler_report_dict : dict
+            Serialized ProfilerReport.
+        schema_report_dict : dict
+            Serialized SchemaReport.
+        anomaly_report_dict : dict
+            Serialized AnomalyReport.
+        user_config : dict, optional
+            Optional user-provided preferences (e.g. preferred actions).
         """
-        # 1. Prepare reports
-        # We serialize them to formatted JSON strings
+        logger.info(
+            "StrategistAgent starting (prompt v%s, model=%s, provider=%s)",
+            PROMPT_VERSION, self.config.model_name, self.config.provider,
+        )
+
+        # 1. Prepare reports — serialize to formatted JSON strings
         prof_json = json.dumps(profiler_report_dict, indent=2)
         schem_json = json.dumps(schema_report_dict, indent=2)
         anom_json = json.dumps(anomaly_report_dict, indent=2)
+        user_cfg_json = json.dumps(user_config, indent=2) if user_config else None
         
-        user_prompt = build_strategist_prompt(prof_json, schem_json, anom_json)
+        user_prompt = build_strategist_prompt(prof_json, schem_json, anom_json, user_cfg_json)
         
         # 2. Retry loop
         for attempt in range(1, self.config.max_retries + 1):
@@ -96,3 +117,4 @@ class StrategistAgent:
             status="error",
             error_message="Failed to generate valid strategy. Check LLM availability or prompt constraints."
         )
+

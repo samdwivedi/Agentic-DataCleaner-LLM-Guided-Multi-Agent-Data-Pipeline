@@ -24,7 +24,11 @@ class ActionRegistry(str, Enum):
     MODE_IMPUTATION = "mode_imputation"
     CONSTANT_IMPUTATION = "constant_imputation"
     CLAMP_OUTLIERS = "clamp_outliers"
+    CAP_OUTLIERS = "cap_outliers"
     DROP_OUTLIERS = "drop_outliers"
+    REMOVE_DUPLICATES = "remove_duplicates"
+    STANDARDIZE_CATEGORIES = "standardize_categories"
+    CONVERT_DATATYPE = "convert_datatype"
     NONE = "none"
 
 

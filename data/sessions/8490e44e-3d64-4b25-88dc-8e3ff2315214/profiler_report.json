@@ -1,0 +1,174 @@
+{
+  "meta": {
+    "row_count": 10,
+    "column_count": 3,
+    "total_cells": 30,
+    "total_missing": 3,
+    "total_missing_pct": 10.0,
+    "memory_usage_bytes": 774,
+    "numeric_column_count": 2,
+    "categorical_column_count": 1,
+    "datetime_column_count": 0,
+    "boolean_column_count": 0,
+    "other_column_count": 0,
+    "dtypes_summary": {
+      "int64": 1,
+      "float64": 1,
+      "object": 1
+    }
+  },
+  "columns": [
+    {
+      "name": "id",
+      "dtype": "int64",
+      "dtype_kind": "i",
+      "row_count": 10,
+      "non_null_count": 10,
+      "missing_count": 0,
+      "missing_pct": 0.0,
+      "unique_count": 9,
+      "unique_pct": 90.0,
+      "numerical_stats": {
+        "mean": 5.4,
+        "median": 5.5,
+        "std": 2.9888682362,
+        "min": 1.0,
+        "max": 10.0,
+        "q1": 3.25,
+        "q3": 7.5,
+        "iqr": 4.25,
+        "skewness": 0.1086119695,
+        "kurtosis": -1.0378942176,
+        "zero_count": 0,
+        "zero_pct": 0.0,
+        "negative_count": 0,
+        "negative_pct": 0.0,
+        "positive_count": 10,
+        "positive_pct": 100.0,
+        "sum": 54.0,
+        "variance": 8.9333333333
+      },
+      "categorical_stats": null,
+      "value_min": "1.0",
+      "value_max": "10.0",
+      "inferred_type": "numeric_int"
+    },
+    {
+      "name": "age",
+      "dtype": "float64",
+      "dtype_kind": "f",
+      "row_count": 10,
+      "non_null_count": 8,
+      "missing_count": 2,
+      "missing_pct": 20.0,
+      "unique_count": 7,
+      "unique_pct": 87.5,
+      "numerical_stats": {
+        "mean": 75.25,
+        "median": 29.5,
+        "std": 131.2595574751,
+        "min": 25.0,
+        "max": 400.0,
+        "q1": 26.0,
+        "q3": 32.0,
+        "iqr": 6.0,
+        "skewness": 2.8249283805,
+        "kurtosis": 7.9850800304,
+        "zero_count": 0,
+        "zero_pct": 0.0,
+        "negative_count": 0,
+        "negative_pct": 0.0,
+        "positive_count": 8,
+        "positive_pct": 80.0,
+        "sum": 602.0,
+        "variance": 17229.0714285714
+      },
+      "categorical_stats": null,
+      "value_min": "25.0",
+      "value_max": "400.0",
+      "inferred_type": "numeric_float"
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "dtype_kind": "O",
+      "row_count": 10,
+      "non_null_count": 9,
+      "missing_count": 1,
+      "missing_pct": 10.0,
+      "unique_count": 4,
+      "unique_pct": 44.4444,
+      "numerical_stats": null,
+      "categorical_stats": {
+        "top_values": [
+          {
+            "value": "B",
+            "count": 4,
+            "frequency": 0.444444
+          },
+          {
+            "value": "A",
+            "count": 3,
+            "frequency": 0.333333
+          },
+          {
+            "value": "X",
+            "count": 1,
+            "frequency": 0.111111
+          },
+          {
+            "value": "Y",
+            "count": 1,
+            "frequency": 0.111111
+          }
+        ],
+        "least_values": [
+          {
+            "value": "B",
+            "count": 4,
+            "frequency": 0.444444
+          },
+          {
+            "value": "A",
+            "count": 3,
+            "frequency": 0.333333
+          },
+          {
+            "value": "X",
+            "count": 1,
+            "frequency": 0.111111
+          },
+          {
+            "value": "Y",
+            "count": 1,
+            "frequency": 0.111111
+          }
+        ],
+        "mode": "B",
+        "mode_count": 4,
+        "mode_frequency": 0.444444,
+        "avg_str_length": 1.0,
+        "max_str_length": 1,
+        "min_str_length": 1
+      },
+      "value_min": "A",
+      "value_max": "Y",
+      "inferred_type": "categorical"
+    }
+  ],
+  "duplicates": {
+    "duplicate_row_count": 1,
+    "duplicate_row_pct": 10.0,
+    "has_duplicates": true
+  },
+  "problematic": [
+    {
+      "column": "age",
+      "reasons": [
+        "Heavily right-skewed distribution (skewness=2.82)."
+      ]
+    }
+  ],
+  "profiler_version": "3.0.0",
+  "profiled_at": "2026-09-23T19:43:37.686343+00:00"
+}

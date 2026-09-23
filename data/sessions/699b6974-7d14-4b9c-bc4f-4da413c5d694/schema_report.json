@@ -1,0 +1,8 @@
+{
+  "is_valid": true,
+  "rows_checked": 10,
+  "columns_checked": 3,
+  "violations": [],
+  "validated_at": "2026-09-23T19:42:22.722385+00:00",
+  "validator_version": "1.0.0"
+}

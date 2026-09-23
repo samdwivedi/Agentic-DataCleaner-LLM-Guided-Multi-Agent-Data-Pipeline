@@ -22,6 +22,7 @@ import backend.database as db
 from backend.routes import query as query_router
 from backend.routes import history as history_router
 from backend.routes import feedback as feedback_router
+from backend.routes import pipeline as pipeline_router
 
 # ── Bootstrap logging before anything else ────────────────────────────────────
 setup_logging()
@@ -85,6 +86,7 @@ async def on_shutdown():
 app.include_router(query_router.router,    tags=["Query"])
 app.include_router(history_router.router,  tags=["History"])
 app.include_router(feedback_router.router, tags=["Feedback"])
+app.include_router(pipeline_router.router, tags=["Pipeline"])
 
 # ── Health check ──────────────────────────────────────────────────────────────
 @app.get("/health", tags=["System"])

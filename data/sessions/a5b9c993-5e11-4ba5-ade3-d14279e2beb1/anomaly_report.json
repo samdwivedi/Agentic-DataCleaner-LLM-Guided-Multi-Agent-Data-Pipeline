@@ -1,0 +1,29 @@
+{
+  "total_rows": 10,
+  "columns_analyzed": 2,
+  "total_outliers_found": 1,
+  "column_reports": [
+    {
+      "column_name": "id",
+      "method": "IQR + Z-score",
+      "outlier_count": 0,
+      "outlier_pct": 0.0,
+      "iqr_lower_bound": -3.125,
+      "iqr_upper_bound": 13.875,
+      "zscore_threshold_used": 3.0,
+      "is_robust_zscore": false
+    },
+    {
+      "column_name": "age",
+      "method": "IQR + Z-score",
+      "outlier_count": 1,
+      "outlier_pct": 12.5,
+      "iqr_lower_bound": 17.0,
+      "iqr_upper_bound": 41.0,
+      "zscore_threshold_used": 3.0,
+      "is_robust_zscore": false
+    }
+  ],
+  "analyzed_at": "2026-09-23T19:45:10.744917+00:00",
+  "detector_version": "1.0.0"
+}
