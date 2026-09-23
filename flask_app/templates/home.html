@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}AI Research Agent — Intelligent Search{% endblock %}
+{% block content %}
+<section class="hero">
+  <h1>Discover. Search. <span class="gradient">Share.</span></h1>
+  <p>An intelligent research agent that remembers every search. Collaborate with your team through shared search history and insights.</p>
+  <div class="hero-actions">
+    <a href="{{ url_for('register') }}" class="btn btn-primary">Get Started Free →</a>
+    <a href="{{ url_for('login') }}" class="btn btn-secondary">Sign In</a>
+  </div>
+</section>
+
+<div class="container">
+  <div class="stats-grid">
+    <div class="glass stat-card">
+      <div class="stat-value">🔍</div>
+      <div class="stat-label">Smart Search</div>
+    </div>
+    <div class="glass stat-card">
+      <div class="stat-value">👥</div>
+      <div class="stat-label">Shared History</div>
+    </div>
+    <div class="glass stat-card">
+      <div class="stat-value">🔒</div>
+      <div class="stat-label">Secure Auth</div>
+    </div>
+    <div class="glass stat-card">
+      <div class="stat-value">⚡</div>
+      <div class="stat-label">Lightning Fast</div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Search: {{ query }} — AI Research Agent{% endblock %}
+{% block content %}
+<div class="container">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-sm">← Back</a>
+    <h1 style="font-size:1.4rem;">Results for "{{ query }}"</h1>
+  </div>
+  <p style="color:var(--text-muted);margin-bottom:28px;">Found {{ results|length }} results • <a href="{{ url_for('search_detail', search_id=search_id) }}">Permalink</a></p>
+
+  {% for r in results %}
+  <div class="result-card glass">
+    <h3><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a></h3>
+    <p>{{ r.snippet }}</p>
+    <a href="{{ r.url }}" target="_blank" rel="noopener" class="result-url">{{ r.url }}</a>
+  </div>
+  {% endfor %}
+
+  <!-- Search Again -->
+  <form method="POST" action="{{ url_for('search') }}" class="search-bar" style="margin-top:36px;">
+    <input type="text" name="query" class="form-control" placeholder="Search for something else…" required />
+    <button type="submit" class="btn btn-primary">🔍 Search</button>
+  </form>
+</div>
+{% endblock %}

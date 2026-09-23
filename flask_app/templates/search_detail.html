@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Search Detail — AI Research Agent{% endblock %}
+{% block content %}
+<div class="container">
+  <a href="{{ url_for('history') }}" class="btn btn-secondary btn-sm" style="margin-bottom:20px;">← Back to History</a>
+
+  <div class="glass" style="padding:28px;margin-bottom:28px;">
+    <h1 style="font-size:1.4rem;margin-bottom:8px;">🔍 {{ search.query }}</h1>
+    <p style="color:var(--text-muted);font-size:.88rem;">
+      Searched by <strong>{{ search.username }}</strong> • {{ search.created_at[:16] }} • {{ results|length }} results
+    </p>
+  </div>
+
+  {% for r in results %}
+  <div class="result-card glass">
+    <h3><a href="{{ r.url }}" target="_blank" rel="noopener">{{ r.title }}</a></h3>
+    <p>{{ r.snippet }}</p>
+    <a href="{{ r.url }}" target="_blank" rel="noopener" class="result-url">{{ r.url }}</a>
+  </div>
+  {% endfor %}
+
+  {% if not results %}
+  <div class="empty-state glass" style="border-radius:var(--radius);">
+    <div class="icon">📄</div>
+    <h3>No results stored</h3>
+    <p>This search has no saved results.</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

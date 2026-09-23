@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Search History — AI Research Agent{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 class="section-title">📜 Shared Search History</h1>
+  <p style="color:var(--text-secondary);margin-bottom:24px;">Browse search history from all users. Filter to see only yours.</p>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <a href="{{ url_for('history', user='all') }}" class="{{ 'active' if filter_user == 'all' }}">🌐 All Users</a>
+    <a href="{{ url_for('history', user='me') }}" class="{{ 'active' if filter_user == 'me' }}">👤 My Searches</a>
+  </div>
+
+  <!-- Search List -->
+  {% if searches %}
+  <div class="search-list">
+    {% for s in searches %}
+    <a href="{{ url_for('search_detail', search_id=s.id) }}" class="search-item glass">
+      <span class="query-text">{{ s.query }}</span>
+      <div class="meta">
+        <span class="user-tag">
+          <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ s.avatar_seed }}" alt="" />
+          {{ s.username }}
+        </span>
+        <span class="badge">{{ s.result_count }} results</span>
+        <span>{{ s.created_at[:16] }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if total_pages > 1 %}
+  <div class="pagination">
+    {% if page > 1 %}
+    <a href="{{ url_for('history', page=page-1, user=filter_user) }}">← Prev</a>
+    {% endif %}
+    {% for p in range(1, total_pages + 1) %}
+      {% if p == page %}
+      <span class="active">{{ p }}</span>
+      {% elif p <= 3 or p >= total_pages - 1 or (p >= page - 1 and p <= page + 1) %}
+      <a href="{{ url_for('history', page=p, user=filter_user) }}">{{ p }}</a>
+      {% elif p == 4 or p == total_pages - 2 %}
+      <span>…</span>
+      {% endif %}
+    {% endfor %}
+    {% if page < total_pages %}
+    <a href="{{ url_for('history', page=page+1, user=filter_user) }}">Next →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {% else %}
+  <div class="empty-state glass" style="border-radius:var(--radius);">
+    <div class="icon">📭</div>
+    <h3>No search history yet</h3>
+    <p>{% if filter_user == 'me' %}You haven't searched anything yet.{% else %}No one has searched yet. Be the first!{% endif %}</p>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-sm" style="margin-top:16px;">Go Search →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

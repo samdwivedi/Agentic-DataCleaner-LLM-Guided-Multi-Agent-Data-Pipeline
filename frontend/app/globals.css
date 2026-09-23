@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+:root {
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
+  --scrollbar-thumb-hover: rgba(99, 102, 241, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* Premium Dark Gradient Background */
+  background: linear-gradient(135deg, #050508 0%, #0b0c16 50%, #150f24 100%);
+  background-attachment: fixed;
+  color: #e2e8f0;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--scrollbar-thumb-hover); }
+
+/* ── Premium Glassmorphism Utility ────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* ── Prose (Markdown) ─────────────────────────────────────────────────────── */
+.prose {
+  color: #cbd5e1;
+  line-height: 1.75;
+  max-width: none;
+}
+.prose h1, .prose h2, .prose h3, .prose h4 {
+  color: #ffffff;
+  font-weight: 600;
+  margin-top: 1.25em;
+  margin-bottom: 0.5em;
+}
+.prose h1 { font-size: 1.5rem; }
+.prose h2 { font-size: 1.25rem; }
+
+.prose p { margin: 0.75em 0; }
+.prose ul { list-style: disc; padding-left: 1.5em; margin: 0.5em 0; }
+.prose ol { list-style: decimal; padding-left: 1.5em; margin: 0.5em 0; }
+.prose li { margin: 0.25em 0; }
+
+.prose a {
+  color: #38bdf8;
+  text-decoration: none;
+  transition: all 0.2s;
+  border-bottom: 1px solid transparent;
+}
+.prose a:hover {
+  text-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+  border-bottom: 1px solid rgba(56, 189, 248, 0.6);
+}
+
+.prose code {
+  background: rgba(255, 255, 255, 0.08);
+  color: #a5b4fc;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.prose pre {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1em 1.2em;
+  overflow-x: auto;
+  margin: 1em 0;
+  backdrop-filter: blur(8px);
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+  color: #e2e8f0;
+  border: none;
+}
+
+.prose blockquote {
+  border-left: 3px solid #6366f1;
+  padding-left: 1em;
+  color: #94a3b8;
+  margin: 1em 0;
+  font-style: italic;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, transparent 100%);
+}
+
+/* ── Tables ───────────────────────────────────────────────────────────────── */
+.prose table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.prose th {
+  background: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  padding: 0.75em 1em;
+  text-align: left;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.prose td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+.prose tr:last-child td { border-bottom: none; }
+.prose tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+/* ── Glow button ──────────────────────────────────────────────────────────── */
+.btn-glow {
+  background: linear-gradient(135deg, #4f46e5, #9333ea);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+}
+.btn-glow:hover {
+  box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+}
+
+/* ── Typing dots ──────────────────────────────────────────────────────────── */
+.typing-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #a5b4fc;
+}

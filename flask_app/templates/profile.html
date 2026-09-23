@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Profile — {{ user.username }}{% endblock %}
+{% block content %}
+<div class="container">
+  <!-- Profile Header -->
+  <div class="profile-header glass">
+    <img src="https://api.dicebear.com/7.x/thumbs/svg?seed={{ user.avatar_seed }}"
+         alt="{{ user.username }}" class="profile-avatar" />
+    <div class="profile-info">
+      <h1>{{ user.username }}</h1>
+      <p>📧 {{ user.email }}</p>
+      <p style="font-size:.82rem;color:var(--text-muted);">Member since {{ user.created_at[:10] }}</p>
+    </div>
+    <div style="margin-left:auto;">
+      <span class="badge" style="font-size:.9rem;padding:8px 18px;">{{ total_searches }} searches</span>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <h2 class="section-title">📋 Recent Activity</h2>
+  {% if recent_searches %}
+  <div class="search-list">
+    {% for s in recent_searches %}
+    <a href="{{ url_for('search_detail', search_id=s.id) }}" class="search-item glass">
+      <span class="query-text">{{ s.query }}</span>
+      <div class="meta">
+        <span class="badge">{{ s.result_count }} results</span>
+        <span>{{ s.created_at[:16] }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state glass" style="border-radius:var(--radius);">
+    <div class="icon">🔍</div>
+    <h3>No activity yet</h3>
+    <p>Start searching to build your history!</p>
+    <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-sm" style="margin-top:16px;">Go to Dashboard →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

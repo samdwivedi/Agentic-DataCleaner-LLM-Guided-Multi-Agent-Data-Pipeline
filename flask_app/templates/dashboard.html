@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — AI Research Agent{% endblock %}
+{% block content %}
+<div class="container">
+  <h1 style="margin-bottom:8px;">👋 Hello, {{ current_user.username }}</h1>
+  <p style="color:var(--text-secondary);margin-bottom:32px;">What would you like to research today?</p>
+
+  <!-- Search Bar -->
+  <form method="POST" action="{{ url_for('search') }}" class="search-bar">
+    <input type="text" name="query" class="form-control" placeholder="Search for anything…" required autofocus />
+    <button type="submit" class="btn btn-primary">🔍 Search</button>
+  </form>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="glass stat-card">
+      <div class="stat-value">{{ total_searches }}</div>
+      <div class="stat-label">My Searches</div>
+    </div>
+    <div class="glass stat-card">
+      <div class="stat-value">{{ global_searches }}</div>
+      <div class="stat-label">Global Searches</div>
+    </div>
+    <div class="glass stat-card">
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-label">Total Users</div>
+    </div>
+  </div>
+
+  <!-- Recent Searches -->
+  <h2 class="section-title">📋 My Recent Searches</h2>
+  {% if recent_searches %}
+  <div class="search-list">
+    {% for s in recent_searches %}
+    <a href="{{ url_for('search_detail', search_id=s.id) }}" class="search-item glass">
+      <span class="query-text">{{ s.query }}</span>
+      <div class="meta">
+        <span class="badge">{{ s.result_count }} results</span>
+        <span>{{ s.created_at[:16] }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div style="margin-top:18px;text-align:center;">
+    <a href="{{ url_for('history', user='me') }}" class="btn btn-secondary btn-sm">View All My History →</a>
+  </div>
+  {% else %}
+  <div class="empty-state glass" style="border-radius:var(--radius);">
+    <div class="icon">🔍</div>
+    <h3>No searches yet</h3>
+    <p>Use the search bar above to start exploring!</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

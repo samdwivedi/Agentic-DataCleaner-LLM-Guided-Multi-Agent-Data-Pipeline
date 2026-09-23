@@ -1,0 +1,507 @@
+2026-04-04 15:34:53  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 15:53:45  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 15:53:45  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 15:53:45  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 15:53:45  INFO      backend.main – ✅ Database ready
+2026-04-04 15:54:50  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:00  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:10  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:20  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:31  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:40  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:55:51  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:56:00  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:56:11  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:56:20  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:56:31  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:56:40  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:57:17  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:57:27  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:57:38  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:57:47  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:57:58  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:07  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:18  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:27  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:38  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:47  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:58:58  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:07  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:18  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:27  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:38  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:47  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 15:59:58  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:07  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:18  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:27  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:38  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:47  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:00:54  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:01:04  INFO      backend.routes.history – GET /history → 0 chats
+2026-04-04 16:01:05  INFO      backend.routes.query – POST /query | chat=614c94de-4c54-4da9-8e02-5c409906304b | query=Compare Claude vs GPT-4 performance benchmarks
+2026-04-04 16:01:06  INFO      backend.services.agent_service – ▶ Query received [chat=614c94de-4c54-4da9-8e02-5c409906304b]: Compare Claude vs GPT-4 performance benchmarks
+2026-04-04 16:01:06  ERROR     backend.services.agent_service – Failed to load tools: No module named 'langchain'
+2026-04-04 16:01:06  INFO      backend.routes.query – POST /query done | 100 ms | tools=[]
+2026-04-04 16:01:06  INFO      backend.routes.history – GET /history → 1 chats
+2026-04-04 16:01:06  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:01:16  INFO      backend.routes.history – GET /history → 1 chats
+2026-04-04 16:01:26  INFO      backend.routes.history – GET /history → 1 chats
+2026-04-04 16:01:36  INFO      backend.routes.history – GET /history → 1 chats
+2026-04-04 16:01:39  INFO      backend.routes.history – GET /history → 1 chats
+2026-04-04 16:01:47  INFO      backend.routes.query – POST /query | chat=2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 | query=Calculate the compound growth of $10,000 at 12% for 5 years
+2026-04-04 16:01:47  INFO      backend.services.agent_service – ▶ Query received [chat=2c4395c1-f9c5-4ae0-9e9f-93573ee62d12]: Calculate the compound growth of $10,000 at 12% for 5 years
+2026-04-04 16:01:47  ERROR     backend.services.agent_service – Failed to load tools: No module named 'langchain'
+2026-04-04 16:01:47  INFO      backend.routes.query – POST /query done | 27 ms | tools=[]
+2026-04-04 16:01:47  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:01:47  INFO      backend.routes.history – GET /history/2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 → 2 messages
+2026-04-04 16:01:51  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:01:51  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:01:53  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:01:53  INFO      backend.routes.history – GET /history/2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 → 2 messages
+2026-04-04 16:02:03  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:02:14  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:02:23  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:02:34  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:02:43  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:02:54  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:03:03  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:03:41  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:03:46  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:03:54  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:03  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:14  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:23  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:34  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:43  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:04:54  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:05:03  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:05:14  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:05:40  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:06:41  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:07:40  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:08:24  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:08:33  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:08:44  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:08:53  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:09:04  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:09:13  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:09:24  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:09:40  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:10:41  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:10:52  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:11:01  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:11:01  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:11:01  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:11:01  INFO      backend.main – ✅ Database ready
+2026-04-04 16:11:16  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:11:18  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:11:19  INFO      backend.routes.history – GET /history → 2 chats
+2026-04-04 16:11:24  INFO      backend.routes.query – POST /query | chat=c6cb8abb-ef11-4f67-a708-ca2985d0b81c | query=What are the top AI companies by market cap?
+2026-04-04 16:11:24  INFO      backend.services.agent_service – ▶ Query received [chat=c6cb8abb-ef11-4f67-a708-ca2985d0b81c]: What are the top AI companies by market cap?
+2026-04-04 16:12:09  WARNING   backend.services.agent_service – OPENAI_API_KEY not set – returning stub response
+2026-04-04 16:12:09  INFO      backend.routes.query – POST /query done | 45354 ms | tools=['database_query', 'web_search']
+2026-04-04 16:12:09  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:10  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:12:21  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:30  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:41  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:12:50  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:00  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:10  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:20  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:20  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:30  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:32  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:32  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:13:34  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:34  INFO      backend.routes.history – GET /history/2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 → 2 messages
+2026-04-04 16:13:36  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:36  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:13:41  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:13:41  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:13:51  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:01  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:03  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:03  INFO      backend.routes.history – GET /history/2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 → 2 messages
+2026-04-04 16:14:03  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:03  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:14:04  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:04  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:14:14  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:24  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:35  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:44  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:14:55  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:04  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:15  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:24  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:35  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:44  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:15:55  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:04  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:15  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:24  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:37  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:44  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:16:55  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:17:04  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:17:15  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:17:24  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:17:35  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:18:41  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:19:40  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:20:41  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:21:40  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:22:41  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:23:29  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:23:30  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:23:35  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:23:35  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:23:45  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:23:55  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:02  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:24:13  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:24:13  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:24:13  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:24:13  INFO      backend.main – ✅ Database ready
+2026-04-04 16:24:16  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:25  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:31  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:31  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:32  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:32  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:32  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:33  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:33  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:33  INFO      backend.routes.history – GET /history → 3 chats
+2026-04-04 16:24:41  INFO      backend.routes.query – POST /query | chat=c8de7012-b4ae-45e0-8767-0c80b03e95b7 | query=What are the top AI companies by market cap?
+2026-04-04 16:24:41  INFO      backend.services.agent_service – ▶ Query received [chat=c8de7012-b4ae-45e0-8767-0c80b03e95b7]: What are the top AI companies by market cap?
+2026-04-04 16:24:54  WARNING   backend.services.agent_service – OPENAI_API_KEY not set – returning stub response
+2026-04-04 16:24:55  INFO      backend.routes.query – POST /query done | 13267 ms | tools=['web_search', 'web_scraper']
+2026-04-04 16:24:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:24:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:24:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:24:55  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 16:25:05  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:25:15  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:25:25  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:25:36  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:25:45  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:25:56  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:26:05  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:26:16  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:26:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:27:14  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:27:25  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:27:25  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:27:25  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:27:25  INFO      backend.main – ✅ Database ready
+2026-04-04 16:27:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:28:01  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:30:52  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:31:05  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:31:05  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:31:05  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:31:05  INFO      backend.main – ✅ Database ready
+2026-04-04 16:36:14  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:42:46  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:42:46  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:42:46  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:42:46  INFO      backend.main – ✅ Database ready
+2026-04-04 16:43:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:43:52  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:44:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:44:12  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:44:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:44:32  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:44:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:00  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:11  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:20  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:31  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:51  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:45:57  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:00  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:07  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:17  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:24  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:24  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:46:33  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:46:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:04  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:13  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:24  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:33  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:54  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:47:57  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:48:11  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:48:12  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:48:12  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:48:12  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:48:12  INFO      backend.main – ✅ Database ready
+2026-04-04 16:49:28  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:49:37  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:49:37  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 16:49:47  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:49:57  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:08  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:17  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:18  INFO      backend.main – 🛑 API shutting down
+2026-04-04 16:50:19  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 16:50:19  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 16:50:19  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 16:50:19  INFO      backend.main – ✅ Database ready
+2026-04-04 16:50:28  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:37  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:45  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:47  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:50:47  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 16:51:05  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:07  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:07  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 16:51:17  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:27  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:37  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:47  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:51:58  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:52:07  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:52:18  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:52:27  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:52:38  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:16  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:17  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:28  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:37  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:48  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:53:57  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:12  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:22  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:25  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:25  INFO      backend.routes.history – GET /history/614c94de-4c54-4da9-8e02-5c409906304b → 2 messages
+2026-04-04 16:54:35  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:46  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:54:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:06  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:15  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:26  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:48  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:55:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:06  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:15  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:26  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:35  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:46  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:56:55  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:57:06  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:57:15  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:57:26  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:57:35  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:25  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:35  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:38  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:38  INFO      backend.routes.history – GET /history/2c4395c1-f9c5-4ae0-9e9f-93573ee62d12 → 2 messages
+2026-04-04 16:58:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:48  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:58:58  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:09  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:18  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:29  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:38  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 16:59:53  INFO      backend.main – 🛑 API shutting down
+2026-04-04 17:00:32  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 17:00:32  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 17:00:32  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 17:00:32  INFO      backend.main – ✅ Database ready
+2026-04-04 17:00:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:00:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:14  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:14  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:22  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:34  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:34  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:50  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:59  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:01:59  INFO      backend.routes.history – GET /history/c6cb8abb-ef11-4f67-a708-ca2985d0b81c → 2 messages
+2026-04-04 17:02:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:09  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:20  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:29  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:02:49  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:00  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:09  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:29  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:32  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:03:52  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:13  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:22  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:33  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:04:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:26  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:32  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:05:52  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:12  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:06:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:01  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:12  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:32  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:52  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:07:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:12  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:13  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:32  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:33  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:41  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:42  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:52  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:08:53  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:02  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:03  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:05  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:07  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:13  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:17  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:23  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:27  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:33  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:37  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:40  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:43  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:47  INFO      backend.routes.history – GET /history → 4 chats
+2026-04-04 17:09:48  INFO      backend.routes.query – POST /query | chat=da840ce5-4ade-4a28-b827-313ff54bf7fc | query=hwo can we solve diffeential equation
+2026-04-04 17:09:48  INFO      backend.services.agent_service – ▶ Query received [chat=da840ce5-4ade-4a28-b827-313ff54bf7fc]: hwo can we solve diffeential equation
+2026-04-04 17:10:21  ERROR     backend.services.agent_service – Agent build failed: cannot import name 'AgentExecutor' from 'langchain.agents' (C:\Users\HP\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\langchain\agents\__init__.py)
+2026-04-04 17:10:21  INFO      backend.routes.query – POST /query done | 32292 ms | tools=[]
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:21  INFO      backend.routes.history – GET /history/da840ce5-4ade-4a28-b827-313ff54bf7fc → 2 messages
+2026-04-04 17:10:22  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:31  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:32  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:35  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:35  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 17:10:36  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:36  INFO      backend.routes.history – GET /history/da840ce5-4ade-4a28-b827-313ff54bf7fc → 2 messages
+2026-04-04 17:10:44  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:46  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:53  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:10:56  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:04  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:06  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:12  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:13  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:22  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:22  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:26  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:27  INFO      backend.routes.history – GET /history/da840ce5-4ade-4a28-b827-313ff54bf7fc → 2 messages
+2026-04-04 17:11:28  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:28  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 17:11:29  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:29  INFO      backend.routes.history – GET /history/da840ce5-4ade-4a28-b827-313ff54bf7fc → 2 messages
+2026-04-04 17:11:31  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:32  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:41  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:43  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:51  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:11:53  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:02  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:03  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:11  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:14  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:22  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:23  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:31  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:33  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:42  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:43  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:12:52  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:03  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:13  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:23  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:33  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:41  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:13:43  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:14:02  INFO      backend.main – 🛑 API shutting down
+2026-04-04 17:14:04  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 17:14:04  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 17:14:04  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 17:14:04  INFO      backend.main – ✅ Database ready
+2026-04-04 17:14:14  INFO      backend.main – 🛑 API shutting down
+2026-04-04 17:14:15  INFO      root – Logging initialised → file: C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\logs\agent.log  |  level: INFO
+2026-04-04 17:14:15  INFO      backend.main – 🚀 AI Research Agent API starting up…
+2026-04-04 17:14:15  INFO      backend.database – API database initialised at C:\Users\HP\.gemini\antigravity\scratch\ai-research-agent\data\api.db
+2026-04-04 17:14:15  INFO      backend.main – ✅ Database ready
+2026-04-04 17:14:48  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:14:57  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:14:59  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:14:59  INFO      backend.routes.history – GET /history/c8de7012-b4ae-45e0-8767-0c80b03e95b7 → 2 messages
+2026-04-04 17:15:09  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:15:20  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:15:29  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:15:40  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:15:44  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:15:54  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:05  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:14  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:25  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:32  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:43  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:16:52  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:17:03  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:17:12  INFO      backend.routes.history – GET /history → 5 chats
+2026-04-04 17:17:23  INFO      backend.routes.history – GET /history → 5 chats
