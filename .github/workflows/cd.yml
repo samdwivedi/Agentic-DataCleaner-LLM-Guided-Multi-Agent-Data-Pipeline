@@ -1,0 +1,42 @@
+name: Continuous Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        type: environment
+        required: true
+        default: 'staging'
+      image_tag:
+        description: 'Docker image tag (e.g. sha-xyz or v1.0.0)'
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy to ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Deployment Documentation
+        run: |
+          echo "This is a skeleton CD workflow."
+          echo "Currently deploying tag: ${{ github.event.inputs.image_tag }}"
+          echo "To implement deployment:"
+          echo "1. Set up secrets (e.g., SSH_PRIVATE_KEY, DEPLOY_HOST) in the GitHub repository environments."
+          echo "2. Add steps here to SSH into the target host, pull the GHCR image, and restart the docker-compose service."
+          echo "3. Example: appleboy/ssh-action to execute deployment commands."
+
+      # Example deployment step (commented out):
+      # - name: Deploy via SSH
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.DEPLOY_HOST }}
+      #     username: ${{ secrets.DEPLOY_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       docker pull ghcr.io/${{ github.repository }}-backend:${{ github.event.inputs.image_tag }}
+      #       docker pull ghcr.io/${{ github.repository }}-frontend:${{ github.event.inputs.image_tag }}
+      #       cd /opt/ai-research-agent/infrastructure
+      #       IMAGE_TAG=${{ github.event.inputs.image_tag }} docker-compose up -d
