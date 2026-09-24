@@ -389,7 +389,12 @@ class ProfilerAgent:
 
         # String-length stats (only for actual string columns)
         avg_len = max_len = min_len = None
-        if non_null.dtype == object or str(non_null.dtype) in ("string", "StringDtype", "string[python]", "string[pyarrow]"):
+        is_string_like = (
+            pd.api.types.is_string_dtype(non_null) or 
+            pd.api.types.is_object_dtype(non_null) or 
+            non_null.dtype.kind in ("S", "U", "O")
+        )
+        if is_string_like:
             try:
                 lengths = [len(str(x)) for x in non_null]
                 if lengths:
