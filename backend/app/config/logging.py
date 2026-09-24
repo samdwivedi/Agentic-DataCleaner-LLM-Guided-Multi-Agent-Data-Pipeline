@@ -21,9 +21,13 @@ import logging.handlers
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
-from config import LOG_BACKUP_COUNT, LOG_DIR, LOG_FILE, LOG_LEVEL, LOG_MAX_BYTES
+from pathlib import Path
 
+LOG_DIR = Path("logs")
+LOG_FILE = LOG_DIR / "agent.log"
+LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+LOG_MAX_BYTES = 5 * 1024 * 1024
+LOG_BACKUP_COUNT = 3
 # ── ANSI colour codes for console output ─────────────────────────────────────
 _COLOURS = {
     "DEBUG":    "\033[36m",   # cyan
