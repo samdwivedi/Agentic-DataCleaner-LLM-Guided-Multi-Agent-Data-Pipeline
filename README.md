@@ -9,13 +9,13 @@
 
 An AI-assisted, multi-agent data quality and cleaning platform that combines deterministic data engineering with LLM-based reasoning. 
 
-Data cleaning is often a tedious, repetitive task for data engineers. However, blindly giving raw datasets to Large Language Models (LLMs) is fundamentally unsafe—it risks hallucinated data, schema corruption, unpredictable transformations, and catastrophic data loss. 
+Data cleaning is often a tedious, repetitive task for data engineers. However, blindly giving raw datasets to Large Language Models (LLMs) is fundamentally unsafe it risks hallucinated data, schema corruption, unpredictable transformations, and catastrophic data loss. 
 
 This project solves this by enforcing a strict engineering principle: **"LLMs recommend; deterministic systems execute."** Raw datasets are never modified by or even sent to the LLM. Instead, a suite of deterministic agents profiles the data, extracts evidence, and passes statistical metadata to an LLM Strategist. The LLM acts purely as a reasoning engine to formulate a structured cleaning plan. That plan is then rigorously validated against safety thresholds before a deterministic Python executor performs the actual Pandas transformations.
 
 ---
 
-## 🏗️ System Architecture
+##  System Architecture
 
 Traditional Naive LLM approach:
 `Raw Dataset` ➔ `LLM` ➔ `Direct Modification (Unsafe)`
@@ -48,7 +48,7 @@ graph TD
     L --> M[Audit Log & Clean Dataset]
 ```
 
-## ✨ Key Features
+##  Key Features
 
 - **Automated Dataset Profiling:** Deterministic statistical extraction (missingness, distribution, inferred types).
 - **Schema & Anomaly Detection:** IQR/Z-score outlier detection and strict type boundary checks.
@@ -61,7 +61,7 @@ graph TD
 - **Web Dashboard:** Interactive Next.js + Tailwind glassmorphism dashboard to visualize recommendations and approve strategies.
 - **Test Suite:** Extensive E2E pipeline tests including adversarial LLM failure simulations.
 
-## 🛡️ Why This Architecture?
+## Why This Architecture?
 
 **Why not let the LLM clean the dataset?**
 Giving an LLM direct access to modify data or write executable Python introduces massive security vulnerabilities (arbitrary code execution), reproducibility issues, and silent data corruption (hallucinated values). 
@@ -78,7 +78,7 @@ We need the semantic reasoning capabilities of an LLM to decide *how* to handle 
 | Data modification | ✅ | ❌ |
 | Human-readable explanation | ❌ | ✅ |
 
-## 🤖 Agent Responsibility Matrix
+##  Agent Responsibility Matrix
 
 | Agent | Type | Responsibility | Input | Output |
 | :--- | :--- | :--- | :--- | :--- |
@@ -90,7 +90,7 @@ We need the semantic reasoning capabilities of an LLM to decide *how* to handle 
 | **Executor Agent** | Deterministic | Applies deterministic Pandas transformations. | Dataset, Validated Strategy | Clean Dataset, `ExecutionResult` |
 | **Quality Assessor**| Deterministic | Compares before/after metrics to ensure improvement. | Original & Clean Datasets| `QualityReport` |
 
-## ⚙️ Deterministic Execution
+##  Deterministic Execution
 
 The `ExecutorAgent` only performs pre-programmed, parameterized operations. Currently implemented actions:
 * `median_imputation`: Fills numeric nulls using the median.
@@ -104,41 +104,41 @@ The `ExecutorAgent` only performs pre-programmed, parameterized operations. Curr
 * `remove_duplicates`: Deduplicates exact row matches.
 * `convert_datatype`: Safely casts column dtypes.
 
-## 🔒 Safety and Security
+## Safety and Security
 - **Zero Code Execution:** The LLM does not generate executable Python or SQL. No `eval()` is used.
 - **Strategy Allowlist:** The LLM can only select actions strictly defined in the `ActionRegistry`.
 - **Original Dataset Preservation:** All cleaning happens on a working copy; the original file is preserved in local session state.
 - **Bounded Operations:** The `StrategyValidator` enforces configurable hard limits (e.g., `MAX_ROW_DROP_PERCENTAGE`).
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 ai-research-agent/
-├── backend/                # FastAPI application (Modular Monolith)
+├── backend/                
 │   ├── app/
-│   │   ├── agents/         # Profiler, Validator, Strategist, etc.
-│   │   ├── api/routes/     # API endpoints
-│   │   ├── config/         # Settings and logging
-│   │   ├── llm/            # LLM provider integrations
-│   │   ├── models/         # Pydantic data schemas
-│   │   ├── operations/     # Deterministic pandas transformations
-│   │   ├── orchestration/  # Pipeline workflow coordinator
-│   │   └── main.py         # Entry point
+│   │   ├── agents/         
+│   │   ├── api/routes/    
+│   │   ├── config/        
+│   │   ├── llm/            
+│   │   ├── models/         
+│   │   ├── operations/     
+│   │   ├── orchestration/  
+│   │   └── main.py         
 │   ├── requirements.txt
-├── frontend/               # Next.js interactive dashboard
+├── frontend/              
 │   ├── src/
-│   │   ├── app/            # App router pages
-│   │   ├── components/     # UI components
-│   │   └── lib/            # Utilities
+│   │   ├── app/            
+│   │   ├── components/    
+│   │   └── lib/            
 │   └── package.json
-├── data/                   # Local session storage (auto-generated)
-├── tests/                  # Pytest unit and integration test suites
+├── data/                   
+├── tests/                  
 │   ├── integration/
 │   └── unit/
-├── infrastructure/         # Deployment configs
-├── docs/                   # Architecture documentation
-├── scripts/                # Development scripts
-└── .env.example            # Environment template
+├── infrastructure/         
+├── docs/                  
+├── scripts/                
+└── .env.example            
 ```
 
 ## 🚀 DevOps & CI/CD
@@ -187,7 +187,6 @@ pip install -r requirements.txt
 cd backend
 uvicorn main:app --reload --port 8000
 ```
-*The API documentation will be available at `http://localhost:8000/docs`.*
 
 ### 3. Frontend Setup
 In a new terminal instance:
@@ -196,18 +195,8 @@ cd frontend
 npm install
 npm run dev
 ```
-*Navigate to `http://localhost:3000` to access the pipeline dashboard.*
 
-## 🧪 Testing
-
-The repository includes a rigorous Pytest suite simulating happy paths, dangerous strategies, LLM downtime, and executor failures.
-
-To run the end-to-end tests:
-```bash
-pytest tests/test_e2e_pipeline.py -v
-```
-
-## 🔌 API Documentation (Pipeline Routes)
+##  API Documentation (Pipeline Routes)
 
 The backend exposes a stateful session-based architecture under `/pipeline`:
 - `POST /pipeline/upload` — Uploads CSV & initiates a UUID session.
@@ -218,7 +207,7 @@ The backend exposes a stateful session-based architecture under `/pipeline`:
 - `POST /pipeline/{session_id}/validate-quality` — Scores before/after dataset metrics.
 - `GET /pipeline/{session_id}/download` — Retrieves the cleaned CSV.
 
-## ⚠️ Failure Modes & Resiliency
+##  Failure Modes & Resiliency
 
 | Failure Scenario | System Behavior |
 | :--- | :--- |
@@ -229,15 +218,7 @@ The backend exposes a stateful session-based architecture under `/pipeline`:
 | **Executor Operation Fails** | Executor traps Pandas errors, skips the failed step (maintaining original dataset), logs the error, and proceeds to the next valid action. |
 | **Quality Degradation** | `QualityAssessor` flags a negative delta; dashboard notifies the user that the strategy was ineffective. |
 
-## 🏭 Production Considerations
-
-While this architecture is robust, deploying it to enterprise production requires additional extensions:
-- **Stateless Storage:** Migrating local `data/sessions/` to AWS S3 / Azure Blob Storage.
-- **Distributed Processing:** Swapping the in-memory Pandas `ExecutorAgent` for Apache Spark or Ray.
-- **Asynchronous Queues:** Utilizing Celery or Redis for long-running LLM strategy generations.
-- **Authentication & RBAC:** Securing the FastAPI endpoints and Next.js frontend with OAuth2.
-
-## 🗺️ Roadmap
+##  Roadmap
 
 - [x] **Phase 1-10:** Complete multi-agent pipeline and interactive Next.js dashboard.
 - [ ] **Phase 11:** Implement multi-table relational schema validation.
@@ -245,5 +226,3 @@ While this architecture is robust, deploying it to enterprise production require
 - [ ] **Phase 13:** Integrate advanced ML-based anomaly detection (Isolation Forests).
 - [ ] **Phase 14:** Distributed data execution backend integration.
 
-## ⚖️ License
-License has not yet been specified.
