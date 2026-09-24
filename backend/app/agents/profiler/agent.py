@@ -390,17 +390,14 @@ class ProfilerAgent:
         # String-length stats (only for actual string columns)
         avg_len = max_len = min_len = None
         
-        # We compute string length stats for any categorical column that isn't boolean or datetime.
-        # This safely bypasses ALL pandas/numpy/pyarrow dtype naming quirks on different OSes.
-        if not pd.api.types.is_bool_dtype(non_null) and not pd.api.types.is_datetime64_any_dtype(non_null):
+        if not non_null.empty and non_null.map(lambda value: isinstance(value, str)).all():
             try:
-                lengths = [len(str(x)) for x in non_null]
-                if lengths:
-                    avg_len = round(sum(lengths) / len(lengths), 4)
-                    max_len = max(lengths)
-                    min_len = min(lengths)
-            except Exception:
-                pass
+                lengths = non_null.map(len)
+                avg_len = round(float(lengths.mean()), 4)
+                max_len = int(lengths.max())
+                min_len = int(lengths.min())
+            except Exception as e:
+                logger.warning("Failed to compute string length stats: %s", e)
 
         return CategoricalStats(
             top_values=top_values,
