@@ -365,9 +365,15 @@ class ProfilerAgent:
         # Value counts
         vc = non_null.value_counts(dropna=True)
 
+        def sanitize_val(v):
+            if isinstance(v, str):
+                v = v[:100] # Truncate long strings
+                v = v.replace("`", "").replace("{", "").replace("}", "") # Strip markdown/json structural chars
+            return v
+
         top_values: list[CategoryFrequency] = [
             CategoryFrequency(
-                value=val,
+                value=sanitize_val(val),
                 count=int(cnt),
                 frequency=round(cnt / non_null_count, 6),
             )
@@ -376,7 +382,7 @@ class ProfilerAgent:
 
         least_values: list[CategoryFrequency] = [
             CategoryFrequency(
-                value=val,
+                value=sanitize_val(val),
                 count=int(cnt),
                 frequency=round(cnt / non_null_count, 6),
             )

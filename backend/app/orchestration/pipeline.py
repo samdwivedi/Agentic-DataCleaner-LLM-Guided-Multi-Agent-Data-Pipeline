@@ -23,14 +23,38 @@ from app.persistence.repository import SessionRepository
 
 logger = logging.getLogger(__name__)
 
+# ── Safety limits for CSV parsing ─────────────────────────────────────────────
+MAX_CSV_ROWS = 500_000       # Half a million rows max
+MAX_CSV_COLUMNS = 200        # 200 columns max
+MAX_CSV_BYTES = 50 * 1024 * 1024  # 50 MB
+
+
+def _safe_read_csv(data: bytes) -> pd.DataFrame:
+    """Parse CSV bytes with safety limits on size, rows, and columns."""
+    if len(data) > MAX_CSV_BYTES:
+        raise ValueError(f"CSV file too large ({len(data):,} bytes). Maximum is {MAX_CSV_BYTES:,} bytes.")
+    
+    df = pd.read_csv(io.BytesIO(data))
+    
+    if len(df) > MAX_CSV_ROWS:
+        raise ValueError(
+            f"CSV has {len(df):,} rows, exceeding the maximum of {MAX_CSV_ROWS:,}."
+        )
+    if len(df.columns) > MAX_CSV_COLUMNS:
+        raise ValueError(
+            f"CSV has {len(df.columns)} columns, exceeding the maximum of {MAX_CSV_COLUMNS}."
+        )
+    return df
+
 
 def infer_schema(df: pd.DataFrame) -> ValidationSchema:
     columns = {}
     for col in df.columns:
         dtype = str(df[col].dtype)
+        is_nullable = bool(df[col].isna().any())
         columns[col] = ColumnRule(
             expected_dtype=dtype,
-            nullable=True,
+            nullable=is_nullable,
         )
     return ValidationSchema(required_columns=list(df.columns), columns=columns)
 
@@ -39,11 +63,8 @@ class PipelineOrchestrator:
     
     @staticmethod
     def initialize_session(repo: SessionRepository, file_bytes: bytes) -> str:
-        # Ensure it parses
-        try:
-            pd.read_csv(io.BytesIO(file_bytes))
-        except Exception as e:
-            raise ValueError(f"Invalid CSV: {e!s}")
+        # Validate CSV can be parsed and respects limits
+        _safe_read_csv(file_bytes)
             
         session_id = str(uuid.uuid4())
         repo.create_session(session_id, file_bytes)
@@ -52,14 +73,13 @@ class PipelineOrchestrator:
     @staticmethod
     def analyze(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         csv_bytes = repo.get_original_csv(session_id)
-        df = pd.read_csv(io.BytesIO(csv_bytes))
+        df = _safe_read_csv(csv_bytes)
 
         profiler = ProfilerAgent()
         profiler_report = profiler.profile(df)
         repo.update_report(session_id, "profiler_report", profiler_report.model_dump())
 
         schema = infer_schema(df)
-        repo.update_report(session_id, "schema_report", schema.model_dump()) # Wait! This is validation schema, we want schema_report
         
         schema_validator = SchemaValidator()
         schema_report = schema_validator.validate(df, schema)
@@ -76,22 +96,23 @@ class PipelineOrchestrator:
         }
 
     @staticmethod
-    def generate_strategy(repo: SessionRepository, session_id: str, custom_provider_url: str = None) -> dict[str, Any]:
+    def generate_strategy(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         p_report = repo.get_report(session_id, "profiler_report")
         s_report = repo.get_report(session_id, "schema_report")
         a_report = repo.get_report(session_id, "anomaly_report")
 
+        import os
         config = StrategistConfig(
-            endpoint_url=custom_provider_url or "http://localhost:11434/api/generate",
+            endpoint_url=os.environ.get("LLM_PROVIDER_URL", "http://localhost:11434/api/generate"),
             model_name="llama3"
         )
         provider = OllamaProvider(config=config)
         strategist = StrategistAgent(provider=provider)
         
         strategy = strategist.generate_strategy(
-            profiler_report=p_report,
-            schema_report=s_report,
-            anomaly_report=a_report,
+            profiler_report_dict=p_report,
+            schema_report_dict=s_report,
+            anomaly_report_dict=a_report,
         )
         
         repo.update_report(session_id, "strategy_raw", strategy.model_dump())
@@ -100,7 +121,7 @@ class PipelineOrchestrator:
     @staticmethod
     def validate_strategy(repo: SessionRepository, session_id: str, actions: list[dict[str, Any]]) -> dict[str, Any]:
         csv_bytes = repo.get_original_csv(session_id)
-        df = pd.read_csv(io.BytesIO(csv_bytes))
+        df = _safe_read_csv(csv_bytes)
         known_columns = set(df.columns)
         
         try:
@@ -110,6 +131,7 @@ class PipelineOrchestrator:
             def _map_dtype(d):
                 if "float" in d: return "numeric_float"
                 if "int" in d: return "numeric_int"
+                if "datetime" in d: return "datetime"
                 return "categorical"
             column_types = {col: _map_dtype(str(df[col].dtype)) for col in df.columns}
             
@@ -137,7 +159,7 @@ class PipelineOrchestrator:
             raise ValueError("Cannot execute an invalid strategy.")
 
         csv_bytes = repo.get_original_csv(session_id)
-        df = pd.read_csv(io.BytesIO(csv_bytes))
+        df = _safe_read_csv(csv_bytes)
         
         executor = ExecutorAgent()
         cleaned_df, result = executor.execute(df, validated)
@@ -154,10 +176,10 @@ class PipelineOrchestrator:
     @staticmethod
     def validate_quality(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         csv_orig = repo.get_original_csv(session_id)
-        df_before = pd.read_csv(io.BytesIO(csv_orig))
+        df_before = _safe_read_csv(csv_orig)
         
         csv_cleaned = repo.get_cleaned_csv(session_id)
-        df_after = pd.read_csv(io.BytesIO(csv_cleaned))
+        df_after = _safe_read_csv(csv_cleaned)
         
         # We need the inferred schema for the quality assessor
         schema = infer_schema(df_before)

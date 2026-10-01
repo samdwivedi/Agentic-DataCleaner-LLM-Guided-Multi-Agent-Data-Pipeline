@@ -1,0 +1,23 @@
+{
+  "is_valid": false,
+  "actions": [],
+  "violations": [
+    {
+      "code": "missing_required_field",
+      "severity": "error",
+      "column": "age",
+      "action": "median_imputation",
+      "message": "Required field 'reason' is missing or empty."
+    },
+    {
+      "code": "dtype_mismatch",
+      "severity": "error",
+      "column": "age",
+      "action": "median_imputation",
+      "message": "Action 'median_imputation' requires column type in ['numeric_float', 'numeric_int'], but 'age' has type 'float64'."
+    }
+  ],
+  "original_action_count": 1,
+  "validated_action_count": 0,
+  "validator_version": "1.0.0"
+}

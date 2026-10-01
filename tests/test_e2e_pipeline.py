@@ -172,7 +172,7 @@ class TestPipelineEndToEnd:
         # By default, hitting localhost on a random/bad port should fail
         response = client.post(f"/pipeline/{session_id}/strategy?custom_provider_url=http://localhost:59999")
         assert response.status_code == 502
-        assert "LLM Generation failed" in response.json()["detail"]
+        assert "LLM generation failed" in response.json()["detail"]
 
 
     def test_dangerous_strategy(self, synthetic_csv_content):

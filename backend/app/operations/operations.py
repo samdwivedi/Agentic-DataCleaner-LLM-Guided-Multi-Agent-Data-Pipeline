@@ -37,6 +37,8 @@ def median_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> 
     """Fill missing values with the column's median."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
+    if not pd.api.types.is_numeric_dtype(df[column]):
+        return df, 0, 0
 
     null_mask = df[column].isna()
     null_count = int(null_mask.sum())
@@ -54,6 +56,8 @@ def mean_imputation(df: pd.DataFrame, column: str, params: dict[str, Any]) -> Op
     """Fill missing values with the column's mean."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
+    if not pd.api.types.is_numeric_dtype(df[column]):
+        return df, 0, 0
 
     null_mask = df[column].isna()
     null_count = int(null_mask.sum())
@@ -143,6 +147,8 @@ def drop_outliers(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpRe
     """Drop rows where the column value is an IQR-based outlier."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
+    if not pd.api.types.is_numeric_dtype(df[column]):
+        return df, 0, 0
 
     q1 = df[column].quantile(0.25)
     q3 = df[column].quantile(0.75)
@@ -179,6 +185,8 @@ def clamp_outliers(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpR
     """Clamp (winsorise) outlier values to IQR-derived bounds."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
+    if not pd.api.types.is_numeric_dtype(df[column]):
+        return df, 0, 0
 
     q1 = df[column].quantile(0.25)
     q3 = df[column].quantile(0.75)
@@ -250,6 +258,10 @@ def convert_datatype(df: pd.DataFrame, column: str, params: dict[str, Any]) -> O
     target_dtype = params.get("target_dtype")
     if not target_dtype:
         raise ValueError("convert_datatype requires a 'target_dtype' parameter.")
+        
+    ALLOWED_DTYPES = {"datetime64[ns]", "datetime", "int64", "int32", "int", "float64", "float32", "float", "str", "string", "object", "bool", "category"}
+    if target_dtype not in ALLOWED_DTYPES:
+        raise ValueError(f"convert_datatype: target_dtype '{target_dtype}' is not allowed.")
 
     result = df.copy()
     old_dtype = str(result[column].dtype)

@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "row_count": 1,
+    "column_count": 3,
+    "total_cells": 3,
+    "total_missing": 0,
+    "total_missing_pct": 0.0,
+    "memory_usage_bytes": 198,
+    "numeric_column_count": 2,
+    "categorical_column_count": 1,
+    "datetime_column_count": 0,
+    "boolean_column_count": 0,
+    "other_column_count": 0,
+    "dtypes_summary": {
+      "int64": 1,
+      "float64": 1,
+      "object": 1
+    }
+  },
+  "columns": [
+    {
+      "name": "id",
+      "dtype": "int64",
+      "dtype_kind": "i",
+      "row_count": 1,
+      "non_null_count": 1,
+      "missing_count": 0,
+      "missing_pct": 0.0,
+      "unique_count": 1,
+      "unique_pct": 100.0,
+      "numerical_stats": {
+        "mean": 1.0,
+        "median": 1.0,
+        "std": 0.0,
+        "min": 1.0,
+        "max": 1.0,
+        "q1": 1.0,
+        "q3": 1.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "zero_count": 0,
+        "zero_pct": 0.0,
+        "negative_count": 0,
+        "negative_pct": 0.0,
+        "positive_count": 1,
+        "positive_pct": 100.0,
+        "sum": 1.0,
+        "variance": 0.0
+      },
+      "categorical_stats": null,
+      "value_min": "1.0",
+      "value_max": "1.0",
+      "inferred_type": "constant"
+    },
+    {
+      "name": "age",
+      "dtype": "float64",
+      "dtype_kind": "f",
+      "row_count": 1,
+      "non_null_count": 1,
+      "missing_count": 0,
+      "missing_pct": 0.0,
+      "unique_count": 1,
+      "unique_pct": 100.0,
+      "numerical_stats": {
+        "mean": 25.0,
+        "median": 25.0,
+        "std": 0.0,
+        "min": 25.0,
+        "max": 25.0,
+        "q1": 25.0,
+        "q3": 25.0,
+        "iqr": 0.0,
+        "skewness": 0.0,
+        "kurtosis": 0.0,
+        "zero_count": 0,
+        "zero_pct": 0.0,
+        "negative_count": 0,
+        "negative_pct": 0.0,
+        "positive_count": 1,
+        "positive_pct": 100.0,
+        "sum": 25.0,
+        "variance": 0.0
+      },
+      "categorical_stats": null,
+      "value_min": "25.0",
+      "value_max": "25.0",
+      "inferred_type": "constant"
+    },
+    {
+      "name": "category",
+      "dtype": "object",
+      "dtype_kind": "O",
+      "row_count": 1,
+      "non_null_count": 1,
+      "missing_count": 0,
+      "missing_pct": 0.0,
+      "unique_count": 1,
+      "unique_pct": 100.0,
+      "numerical_stats": null,
+      "categorical_stats": {
+        "top_values": [
+          {
+            "value": "A",
+            "count": 1,
+            "frequency": 1.0
+          }
+        ],
+        "least_values": [
+          {
+            "value": "A",
+            "count": 1,
+            "frequency": 1.0
+          }
+        ],
+        "mode": "A",
+        "mode_count": 1,
+        "mode_frequency": 1.0,
+        "avg_str_length": 1.0,
+        "max_str_length": 1,
+        "min_str_length": 1
+      },
+      "value_min": "A",
+      "value_max": "A",
+      "inferred_type": "constant"
+    }
+  ],
+  "duplicates": {
+    "duplicate_row_count": 0,
+    "duplicate_row_pct": 0.0,
+    "has_duplicates": false
+  },
+  "problematic": [
+    {
+      "column": "id",
+      "reasons": [
+        "Constant column: only one unique value across all rows."
+      ]
+    },
+    {
+      "column": "age",
+      "reasons": [
+        "Constant column: only one unique value across all rows."
+      ]
+    },
+    {
+      "column": "category",
+      "reasons": [
+        "Constant column: only one unique value across all rows.",
+        "High cardinality: 1 unique values (100.0% of non-null rows)."
+      ]
+    }
+  ],
+  "profiler_version": "3.0.0",
+  "profiled_at": "2026-09-23T19:35:40.301995+00:00"
+}

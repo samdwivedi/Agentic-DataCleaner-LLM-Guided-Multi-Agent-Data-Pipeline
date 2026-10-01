@@ -1,0 +1,51 @@
+{
+  "run_id": "d029711e-e6a3-4c64-8de4-635ceb9beb5f",
+  "total_actions": 1,
+  "successful_actions": 1,
+  "skipped_actions": 0,
+  "failed_actions": 0,
+  "total_rows_before": 10,
+  "total_rows_after": 10,
+  "total_columns_before": 3,
+  "total_columns_after": 3,
+  "log_entries": [
+    {
+      "run_id": "d029711e-e6a3-4c64-8de4-635ceb9beb5f",
+      "action_index": 0,
+      "column": "age",
+      "action": "median_imputation",
+      "parameters": {},
+      "rows_affected": 2,
+      "values_changed": 2,
+      "before_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": true,
+        "dtype": "float64",
+        "null_count": 2,
+        "non_null_count": 8,
+        "mean": 75.25,
+        "median": 29.5,
+        "min": 25.0,
+        "max": 400.0
+      },
+      "after_state": {
+        "row_count": 10,
+        "column_count": 3,
+        "column_exists": true,
+        "dtype": "float64",
+        "null_count": 0,
+        "non_null_count": 10,
+        "mean": 66.1,
+        "median": 29.5,
+        "min": 25.0,
+        "max": 400.0
+      },
+      "execution_status": "success",
+      "error_message": null,
+      "reason": "test",
+      "confidence": 0.9
+    }
+  ],
+  "executor_version": "1.0.0"
+}

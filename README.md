@@ -145,9 +145,9 @@ ai-research-agent/
 
 A professional GitHub Actions CI/CD pipeline enforces safety, security, and quality across every commit.
 
-- **Continuous Integration (`ci.yml`)**: Ultra-fast `ruff` linting, 252+ `pytest` unit/integration tests (with mocked LLM layers), and Next.js static builds.
-- **Security Scans (`security.yml`)**: Continuous Trivy repo scanning and dependency vulnerability checks (`npm audit` & `pip-audit`).
-- **Docker Build & Publish (`docker.yml`)**: Multi-stage docker builds pushed as immutable SHA-tagged artifacts to GitHub Container Registry (`ghcr.io`).
+- **Continuous Integration (`ci.yml`)**: Ultra-fast `ruff` linting/formatting, `mypy` static type checking, frontend TypeScript compilation, 252+ `pytest` unit/integration tests (with mocked LLM layers), and Next.js static builds.
+- **Security Scans (`security.yml`)**: Continuous Trivy repo scanning, Gitleaks secret scanning, and dependency vulnerability checks (`npm audit` & `pip-audit`).
+- **Docker Build & Publish (`docker.yml`)**: Multi-stage docker builds validated on PRs and pushed as immutable SHA-tagged artifacts to GitHub Container Registry (`ghcr.io`) upon merge.
 - **Documentation**: See [docs/devops/ci-cd.md](docs/devops/ci-cd.md) for runbooks and deployment instructions.
 
 ## 🛠️ Tech Stack

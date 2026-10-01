@@ -31,9 +31,17 @@ class BaseLLMProvider(ABC):
         """
 
 
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+
 class OllamaProvider(BaseLLMProvider):
     """Concrete implementation for local Ollama."""
     
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_exponential(multiplier=1, min=2, max=10),
+        retry=retry_if_exception_type((httpx.RequestError, httpx.TimeoutException)),
+        reraise=True
+    )
     def generate_strategy(self, system_prompt: str, user_prompt: str) -> str:
         """Call Ollama /api/generate endpoint."""
         

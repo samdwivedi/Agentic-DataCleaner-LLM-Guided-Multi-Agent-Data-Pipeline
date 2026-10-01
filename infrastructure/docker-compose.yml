@@ -8,8 +8,12 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=sqlite:////data/pipeline.db
+      - DATABASE_URL=postgresql://postgres:password@db:5432/pipeline_db
+      - REDIS_URL=redis://redis:6379/0
       - LOG_LEVEL=INFO
+    depends_on:
+      - db
+      - redis
     volumes:
       - backend_data:/data
     restart: unless-stopped
@@ -26,5 +30,38 @@ services:
       - backend
     restart: unless-stopped
 
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=pipeline_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  celery_worker:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/pipeline_db
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=INFO
+    command: celery -A app.celery_app worker --loglevel=info
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - backend_data:/data
+    restart: unless-stopped
+
 volumes:
   backend_data:
+  postgres_data:

@@ -4,6 +4,17 @@ from sqlalchemy.orm import Session
 
 from .models import PipelineSession
 
+# ── Allowlist of valid report column names ────────────────────────────────────
+_VALID_REPORT_TYPES = frozenset({
+    "profiler_report",
+    "schema_report",
+    "anomaly_report",
+    "strategy_raw",
+    "strategy_validated",
+    "execution_result",
+    "quality_report",
+})
+
 
 class SessionRepository:
     def __init__(self, db: Session):
@@ -25,13 +36,23 @@ class SessionRepository:
     def update_report(self, session_id: str, report_type: str, report_data: dict[str, Any]) -> None:
         """
         Updates one of the JSON report columns.
-        report_type should match the column name (e.g. 'profiler_report').
+        report_type must be one of the allowed column names in _VALID_REPORT_TYPES.
         """
+        if report_type not in _VALID_REPORT_TYPES:
+            raise ValueError(
+                f"Invalid report_type '{report_type}'. "
+                f"Must be one of: {', '.join(sorted(_VALID_REPORT_TYPES))}"
+            )
         db_session = self.get_session(session_id)
         setattr(db_session, report_type, report_data)
         self.db.commit()
 
     def get_report(self, session_id: str, report_type: str) -> dict[str, Any] | None:
+        if report_type not in _VALID_REPORT_TYPES:
+            raise ValueError(
+                f"Invalid report_type '{report_type}'. "
+                f"Must be one of: {', '.join(sorted(_VALID_REPORT_TYPES))}"
+            )
         db_session = self.get_session(session_id)
         report = getattr(db_session, report_type)
         if report is None:

@@ -1,0 +1,85 @@
+{
+  "quality_score_before": 91.0,
+  "quality_score_after": 56.26,
+  "improvement": -34.74,
+  "metrics_before": {
+    "row_count": 10,
+    "column_count": 3,
+    "total_missing": 3,
+    "missing_pct": 10.0,
+    "columns_with_nulls": 2,
+    "duplicate_rows": 1,
+    "duplicate_pct": 10.0,
+    "dtype_violations": 0,
+    "invalid_category_count": 0,
+    "outlier_count": 1,
+    "quality_score": 91.0
+  },
+  "metrics_after": {
+    "row_count": 19,
+    "column_count": 3,
+    "total_missing": 30,
+    "missing_pct": 52.6316,
+    "columns_with_nulls": 3,
+    "duplicate_rows": 17,
+    "duplicate_pct": 89.4737,
+    "dtype_violations": 2,
+    "invalid_category_count": 0,
+    "outlier_count": 0,
+    "quality_score": 56.26
+  },
+  "remaining_issues": [
+    {
+      "severity": "critical",
+      "dimension": "missing",
+      "column": "id",
+      "message": "10 null values (52.6%) remaining."
+    },
+    {
+      "severity": "critical",
+      "dimension": "missing",
+      "column": "age",
+      "message": "10 null values (52.6%) remaining."
+    },
+    {
+      "severity": "critical",
+      "dimension": "missing",
+      "column": "category",
+      "message": "10 null values (52.6%) remaining."
+    },
+    {
+      "severity": "warning",
+      "dimension": "duplicates",
+      "column": null,
+      "message": "17 duplicate rows (89.5%) remaining."
+    }
+  ],
+  "critical_failures": [
+    {
+      "severity": "critical",
+      "dimension": "score",
+      "column": null,
+      "message": "Quality score decreased: 91.0 → 56.3."
+    },
+    {
+      "severity": "critical",
+      "dimension": "missing",
+      "column": null,
+      "message": "Missing percentage increased: 10.00% → 52.63%."
+    },
+    {
+      "severity": "critical",
+      "dimension": "duplicates",
+      "column": null,
+      "message": "Duplicate percentage increased: 10.00% → 89.47%."
+    },
+    {
+      "severity": "critical",
+      "dimension": "score",
+      "column": null,
+      "message": "Post-cleaning score 56.3 is below minimum acceptable threshold (60.0)."
+    }
+  ],
+  "is_successful": false,
+  "assessor_version": "1.0.0"
+}
