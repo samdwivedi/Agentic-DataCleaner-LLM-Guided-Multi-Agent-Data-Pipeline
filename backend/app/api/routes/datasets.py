@@ -147,7 +147,7 @@ async def download_cleaned(session_id: str, format: str = "csv", repo: SessionRe
             return StreamingResponse(
                 io.BytesIO(csv_bytes), 
                 media_type="text/csv", 
-                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.csv"}
+                headers={"Content-Disposition": "attachment; filename=cleaned_dataset.csv"}
             )
             
         # Parse into DataFrame for conversion
@@ -160,7 +160,7 @@ async def download_cleaned(session_id: str, format: str = "csv", repo: SessionRe
             return StreamingResponse(
                 output, 
                 media_type="application/vnd.apache.parquet", 
-                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.parquet"}
+                headers={"Content-Disposition": "attachment; filename=cleaned_dataset.parquet"}
             )
         elif format == "xlsx":
             df.to_excel(output, index=False, engine="openpyxl")
@@ -168,7 +168,7 @@ async def download_cleaned(session_id: str, format: str = "csv", repo: SessionRe
             return StreamingResponse(
                 output, 
                 media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.xlsx"}
+                headers={"Content-Disposition": "attachment; filename=cleaned_dataset.xlsx"}
             )
         elif format == "json":
             df.to_json(output, orient="records")
@@ -176,7 +176,7 @@ async def download_cleaned(session_id: str, format: str = "csv", repo: SessionRe
             return StreamingResponse(
                 output, 
                 media_type="application/json", 
-                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.json"}
+                headers={"Content-Disposition": "attachment; filename=cleaned_dataset.json"}
             )
             
     except FileNotFoundError:
