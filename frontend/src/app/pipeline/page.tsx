@@ -2,10 +2,19 @@
 
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Activity, Zap, CheckCircle, Download, Shield, Play, AlertTriangle, RotateCcw, X } from 'lucide-react'
+import { Upload, Activity, Zap, CheckCircle, Download, Shield, Play, AlertTriangle, RotateCcw, X, BarChart3, Grid3X3, Columns3, Radar, TrendingUp, Eye } from 'lucide-react'
 import { StrategyTable } from '@/components/StrategyTable'
 import { ExecutionLog } from '@/components/ExecutionLog'
 import { MetricCard } from '@/components/MetricCard'
+import {
+  QualityScoreGauge,
+  MissingnessHeatmap,
+  AnomalyChart,
+  ColumnProfileCharts,
+  BeforeAfterComparison,
+  DataHealthRadar,
+  DatasetOverview,
+} from '@/components/charts'
 
 type Step = 'upload' | 'analyzing' | 'strategy' | 'executing' | 'results'
 
@@ -64,6 +73,8 @@ export default function PipelineDashboard() {
   const [executionData, setExecutionData] = useState<any>(null)
   const [qualityData, setQualityData] = useState<any>(null)
   const [exportFormat, setExportFormat] = useState('csv')
+  const [activeAnalysisTab, setActiveAnalysisTab] = useState<'overview' | 'heatmap' | 'columns' | 'anomalies'>('overview')
+  const [activeResultsTab, setActiveResultsTab] = useState<'comparison' | 'radar' | 'audit'>('comparison')
   
   const [loadingMsg, setLoadingMsg] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -252,14 +263,88 @@ export default function PipelineDashboard() {
                 key="strategy"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="space-y-8"
+                className="space-y-6"
               >
+                {/* ── Top metric cards ─────────────────────────── */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <MetricCard title="Rows" value={analysisData.profiler?.meta?.row_count ?? analysisData.profiler_report?.summary?.row_count} icon={<Activity />} />
-                  <MetricCard title="Columns" value={analysisData.profiler?.meta?.column_count ?? analysisData.profiler_report?.summary?.column_count} icon={<Activity />} />
-                  <MetricCard title="Anomalies" value={analysisData.anomaly?.total_outliers_found ?? analysisData.anomaly_report?.summary?.total_outliers_found} icon={<Activity />} />
+                  <MetricCard title="Columns" value={analysisData.profiler?.meta?.column_count ?? analysisData.profiler_report?.summary?.column_count} icon={<Columns3 />} />
+                  <MetricCard title="Anomalies" value={analysisData.anomaly?.total_outliers_found ?? analysisData.anomaly_report?.summary?.total_outliers_found} icon={<AlertTriangle />} />
                 </div>
-                
+
+                {/* ── Interactive Data Visualizations (Tabbed) ── */}
+                <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                      <Eye className="text-indigo-400 w-5 h-5" />
+                      Dataset Analysis
+                    </h2>
+                    <div className="flex bg-slate-800/60 rounded-xl p-1 gap-1">
+                      {[
+                        { key: 'overview' as const, label: 'Overview', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+                        { key: 'heatmap' as const, label: 'Missing Data', icon: <Grid3X3 className="w-3.5 h-3.5" /> },
+                        { key: 'columns' as const, label: 'Distributions', icon: <Columns3 className="w-3.5 h-3.5" /> },
+                        { key: 'anomalies' as const, label: 'Anomalies', icon: <AlertTriangle className="w-3.5 h-3.5" /> },
+                      ].map(tab => (
+                        <button
+                          key={tab.key}
+                          onClick={() => setActiveAnalysisTab(tab.key)}
+                          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            activeAnalysisTab === tab.key
+                              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30'
+                              : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                          }`}
+                        >
+                          {tab.icon}
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {activeAnalysisTab === 'overview' && (analysisData.profiler?.meta || analysisData.profiler_report?.summary) && (
+                      <motion.div key="tab-overview" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <DatasetOverview
+                          meta={analysisData.profiler?.meta ?? analysisData.profiler_report?.summary}
+                          duplicates={analysisData.profiler?.duplicates ?? analysisData.profiler_report?.duplicates ?? { duplicate_row_count: 0, duplicate_row_pct: 0, has_duplicates: false }}
+                        />
+                      </motion.div>
+                    )}
+
+                    {activeAnalysisTab === 'heatmap' && (analysisData.profiler?.columns || analysisData.profiler_report?.columns) && (
+                      <motion.div key="tab-heatmap" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <MissingnessHeatmap
+                          columns={(analysisData.profiler?.columns ?? analysisData.profiler_report?.columns ?? []).map((c: any) => ({
+                            name: c.name,
+                            missing_pct: c.missing_pct,
+                            missing_count: c.missing_count,
+                            row_count: c.row_count,
+                          }))}
+                        />
+                      </motion.div>
+                    )}
+
+                    {activeAnalysisTab === 'columns' && (analysisData.profiler?.columns || analysisData.profiler_report?.columns) && (
+                      <motion.div key="tab-columns" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <ColumnProfileCharts
+                          columns={analysisData.profiler?.columns ?? analysisData.profiler_report?.columns ?? []}
+                        />
+                      </motion.div>
+                    )}
+
+                    {activeAnalysisTab === 'anomalies' && (
+                      <motion.div key="tab-anomalies" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <AnomalyChart
+                          columnReports={analysisData.anomaly?.column_reports ?? analysisData.anomaly_report?.column_reports ?? []}
+                          totalRows={analysisData.profiler?.meta?.row_count ?? analysisData.profiler_report?.summary?.row_count ?? 0}
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* ── Proposed Strategy ─────────────────────────── */}
                 <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl">
                   <div className="flex items-center justify-between mb-8">
                     <div>
@@ -289,55 +374,141 @@ export default function PipelineDashboard() {
                 key="results"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="space-y-8"
+                className="space-y-6"
               >
-                <div className="bg-gradient-to-br from-emerald-900/20 to-teal-900/20 border border-emerald-500/20 backdrop-blur-xl rounded-3xl p-8 text-center shadow-2xl shadow-emerald-900/10">
-                  <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="w-10 h-10 text-emerald-400" />
-                  </div>
-                  <h2 className="text-4xl font-bold text-white mb-4">Cleaning Complete</h2>
-                  <p className="text-emerald-100/70 text-lg mb-8 max-w-2xl mx-auto">
-                    The deterministic executor safely applied the strategy. Quality score improved from <strong className="text-white">{qualityData.quality_score_before?.toFixed(1) ?? qualityData.score_before?.toFixed(1)}</strong> to <strong className="text-emerald-400">{qualityData.quality_score_after?.toFixed(1) ?? qualityData.score_after?.toFixed(1)}</strong>.
-                  </p>
-                  
-                  <div className="flex items-center justify-center gap-4">
-                    <select 
-                      value={exportFormat}
-                      onChange={(e) => setExportFormat(e.target.value)}
-                      className="px-4 py-4 bg-slate-800 text-white rounded-2xl border border-slate-700 outline-none focus:border-emerald-500 transition-colors cursor-pointer shadow-lg font-medium"
-                    >
-                      <option value="csv">CSV</option>
-                      <option value="parquet">Parquet</option>
-                      <option value="xlsx">Excel (XLSX)</option>
-                      <option value="json">JSON</option>
-                    </select>
+                {/* ── Hero banner with gauge ─────────────────── */}
+                <div className="bg-gradient-to-br from-emerald-900/20 to-teal-900/20 border border-emerald-500/20 backdrop-blur-xl rounded-3xl p-8 shadow-2xl shadow-emerald-900/10">
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-8 items-center">
+                    {/* Left: Text */}
+                    <div className="text-center md:text-left">
+                      <div className="flex items-center gap-3 justify-center md:justify-start mb-4">
+                        <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center">
+                          <CheckCircle className="w-6 h-6 text-emerald-400" />
+                        </div>
+                        <h2 className="text-3xl font-bold text-white">Cleaning Complete</h2>
+                      </div>
+                      <p className="text-emerald-100/70 text-base mb-6 max-w-md">
+                        The deterministic executor safely applied the strategy. Your dataset has been cleaned and validated.
+                      </p>
+                      <div className="flex items-center gap-3 flex-wrap justify-center md:justify-start">
+                        <select 
+                          value={exportFormat}
+                          onChange={(e) => setExportFormat(e.target.value)}
+                          className="px-4 py-3 bg-slate-800 text-white rounded-xl border border-slate-700 outline-none focus:border-emerald-500 transition-colors cursor-pointer shadow-lg font-medium text-sm"
+                        >
+                          <option value="csv">CSV</option>
+                          <option value="parquet">Parquet</option>
+                          <option value="xlsx">Excel (XLSX)</option>
+                          <option value="json">JSON</option>
+                        </select>
+                        <a 
+                          href={`${API_BASE}/pipeline/${sessionId}/download?format=${exportFormat}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          id="download-cleaned-btn"
+                          className="inline-flex px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold items-center gap-2 shadow-lg shadow-emerald-900/20 transition-all hover:scale-105 text-sm"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download
+                        </a>
+                        <button
+                          onClick={handleReset}
+                          className="inline-flex px-5 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-bold items-center gap-2 transition-all hover:scale-105 text-sm"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          New
+                        </button>
+                      </div>
+                    </div>
 
-                    <a 
-                      href={`${API_BASE}/pipeline/${sessionId}/download?format=${exportFormat}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      id="download-cleaned-btn"
-                      className="inline-flex px-8 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl font-bold items-center gap-3 shadow-lg shadow-emerald-900/20 transition-all hover:scale-105"
-                    >
-                      <Download className="w-5 h-5" />
-                      Download Cleaned Dataset
-                    </a>
-                    <button
-                      onClick={handleReset}
-                      className="inline-flex px-6 py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl font-bold items-center gap-3 transition-all hover:scale-105"
-                    >
-                      <RotateCcw className="w-5 h-5" />
-                      New Pipeline
-                    </button>
+                    {/* Center: Quality Gauge */}
+                    <div className="hidden md:block">
+                      <QualityScoreGauge
+                        scoreBefore={qualityData.quality_score_before ?? qualityData.score_before ?? 0}
+                        scoreAfter={qualityData.quality_score_after ?? qualityData.score_after ?? 0}
+                      />
+                    </div>
+
+                    {/* Right: Quick stats */}
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { label: 'Rows Cleaned', value: (qualityData.metrics_after?.row_count ?? qualityData.metrics_before?.row_count ?? '-').toLocaleString(), color: 'text-white' },
+                        { label: 'Missing After', value: `${(qualityData.metrics_after?.missing_pct ?? 0).toFixed(1)}%`, color: (qualityData.metrics_after?.missing_pct ?? 0) < 5 ? 'text-emerald-400' : 'text-amber-400' },
+                        { label: 'Duplicates After', value: `${(qualityData.metrics_after?.duplicate_pct ?? 0).toFixed(1)}%`, color: (qualityData.metrics_after?.duplicate_pct ?? 0) < 1 ? 'text-emerald-400' : 'text-amber-400' },
+                        { label: 'Improvement', value: `${qualityData.improvement >= 0 ? '+' : ''}${(qualityData.improvement ?? 0).toFixed(1)}`, color: (qualityData.improvement ?? 0) >= 0 ? 'text-emerald-400' : 'text-red-400' },
+                      ].map(s => (
+                        <div key={s.label} className="bg-black/20 rounded-xl p-3 border border-white/5">
+                          <p className="text-[10px] text-slate-500 uppercase tracking-wider">{s.label}</p>
+                          <p className={`text-lg font-bold mt-0.5 ${s.color}`}>{s.value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Mobile gauge */}
+                  <div className="md:hidden mt-6 flex justify-center">
+                    <QualityScoreGauge
+                      scoreBefore={qualityData.quality_score_before ?? qualityData.score_before ?? 0}
+                      scoreAfter={qualityData.quality_score_after ?? qualityData.score_after ?? 0}
+                    />
                   </div>
                 </div>
 
-                <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-8 shadow-2xl">
-                  <h3 className="text-2xl font-bold text-white flex items-center gap-3 mb-6">
-                    <Shield className="text-indigo-400 w-6 h-6" />
-                    Execution Audit Log
-                  </h3>
-                  <ExecutionLog logs={executionData.log_entries} />
+                {/* ── Detailed Results (Tabbed) ──────────────── */}
+                <div className="bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 shadow-2xl">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                      <TrendingUp className="text-indigo-400 w-5 h-5" />
+                      Detailed Results
+                    </h3>
+                    <div className="flex bg-slate-800/60 rounded-xl p-1 gap-1">
+                      {[
+                        { key: 'comparison' as const, label: 'Before / After', icon: <BarChart3 className="w-3.5 h-3.5" /> },
+                        { key: 'radar' as const, label: 'Health Radar', icon: <Radar className="w-3.5 h-3.5" /> },
+                        { key: 'audit' as const, label: 'Audit Log', icon: <Shield className="w-3.5 h-3.5" /> },
+                      ].map(tab => (
+                        <button
+                          key={tab.key}
+                          onClick={() => setActiveResultsTab(tab.key)}
+                          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all ${
+                            activeResultsTab === tab.key
+                              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-900/30'
+                              : 'text-slate-400 hover:text-white hover:bg-slate-700/50'
+                          }`}
+                        >
+                          {tab.icon}
+                          {tab.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    {activeResultsTab === 'comparison' && qualityData.metrics_before && qualityData.metrics_after && (
+                      <motion.div key="tab-comparison" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <BeforeAfterComparison
+                          before={qualityData.metrics_before}
+                          after={qualityData.metrics_after}
+                        />
+                      </motion.div>
+                    )}
+
+                    {activeResultsTab === 'radar' && qualityData.metrics_before && qualityData.metrics_after && (
+                      <motion.div key="tab-radar" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <DataHealthRadar
+                          before={qualityData.metrics_before}
+                          after={qualityData.metrics_after}
+                          totalRows={qualityData.metrics_before.row_count ?? 1}
+                        />
+                      </motion.div>
+                    )}
+
+                    {activeResultsTab === 'audit' && (
+                      <motion.div key="tab-audit" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                        <ExecutionLog logs={executionData.log_entries} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </motion.div>
             )}
