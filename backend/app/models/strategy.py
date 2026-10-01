@@ -1,7 +1,7 @@
 """
 Strategist Models
 ─────────────────
-Strongly-typed Pydantic v2 models for configuring the LLM Strategist and 
+Strongly-typed Pydantic v2 models for configuring the LLM Strategist and
 defining the strictly constrained JSON output (CleaningStrategy).
 """
 
@@ -14,9 +14,10 @@ from pydantic import BaseModel, Field
 
 # ── Action Registry (Strict Enums) ────────────────────────────────────────────
 
+
 class ActionRegistry(str, Enum):
     """Allowed cleaning actions the LLM can select from."""
-    
+
     DROP_COLUMN = "drop_column"
     DROP_ROWS = "drop_rows"
     MEDIAN_IMPUTATION = "median_imputation"
@@ -35,15 +36,12 @@ class ActionRegistry(str, Enum):
 
 # ── Strategy Models (LLM Output) ──────────────────────────────────────────────
 
+
 class CleaningAction(BaseModel):
     """A single cleaning instruction proposed by the LLM."""
-    
-    column: str = Field(
-        ..., description="The exact name of the column to clean."
-    )
-    action: ActionRegistry = Field(
-        ..., description="The specific cleaning action to apply."
-    )
+
+    column: str = Field(..., description="The exact name of the column to clean.")
+    action: ActionRegistry = Field(..., description="The specific cleaning action to apply.")
     parameters: dict[str, Any] = Field(
         default_factory=dict, description="Optional parameters for the action (e.g., {'value': 0})."
     )
@@ -57,26 +55,33 @@ class CleaningAction(BaseModel):
 
 class CleaningStrategy(BaseModel):
     """The complete output strategy containing all proposed actions."""
-    
+
     actions: list[CleaningAction] = Field(
         default_factory=list, description="List of proposed cleaning actions."
     )
     status: str = Field(
         "success", description="Status of the strategy generation ('success' or 'error')."
     )
-    error_message: str | None = Field(
-        None, description="Error details if the LLM provider failed."
-    )
+    error_message: str | None = Field(None, description="Error details if the LLM provider failed.")
 
 
 # ── Configuration Models ──────────────────────────────────────────────────────
 
+
 class StrategistConfig(BaseModel):
     """Configuration for the LLM Strategist Agent."""
-    
+
     provider: str = Field("ollama", description="The LLM provider to use.")
-    model_name: str = Field("llama3", description="The exact model name (e.g., 'llama3', 'mistral').")
-    endpoint_url: str = Field("http://localhost:11434/api/generate", description="API endpoint for the provider.")
+    model_name: str = Field(
+        "llama3", description="The exact model name (e.g., 'llama3', 'mistral')."
+    )
+    endpoint_url: str = Field(
+        "http://localhost:11434/api/generate", description="API endpoint for the provider."
+    )
     timeout_seconds: float = Field(30.0, description="Timeout for the LLM API call.")
-    max_retries: int = Field(3, description="Maximum number of retries for parsing errors or network failures.")
-    temperature: float = Field(0.0, description="LLM temperature (0.0 recommended for deterministic JSON).")
+    max_retries: int = Field(
+        3, description="Maximum number of retries for parsing errors or network failures."
+    )
+    temperature: float = Field(
+        0.0, description="LLM temperature (0.0 recommended for deterministic JSON)."
+    )

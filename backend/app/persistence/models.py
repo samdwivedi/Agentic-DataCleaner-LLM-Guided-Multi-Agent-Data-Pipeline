@@ -9,7 +9,7 @@ class PipelineSession(Base):
     session_id = Column(String, primary_key=True, index=True)
     original_csv = Column(LargeBinary, nullable=False)
     cleaned_csv = Column(LargeBinary, nullable=True)
-    
+
     profiler_report = Column(JSON, nullable=True)
     schema_report = Column(JSON, nullable=True)
     anomaly_report = Column(JSON, nullable=True)

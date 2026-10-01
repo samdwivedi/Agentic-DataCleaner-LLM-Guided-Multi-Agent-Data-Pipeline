@@ -95,7 +95,9 @@ class ExecutorAgent:
 
         logger.info(
             "ExecutorAgent starting run=%s | %d actions | shape=%s",
-            run_id, len(strategy.actions), df.shape,
+            run_id,
+            len(strategy.actions),
+            df.shape,
         )
 
         # ── Work on a copy ────────────────────────────────────────────────
@@ -157,7 +159,11 @@ class ExecutorAgent:
                 log_entries.append(entry)
                 fail_count += 1
                 logger.error(
-                    "Action %d [%s.%s]: FAILED — %s", idx, column, action_name, e,
+                    "Action %d [%s.%s]: FAILED — %s",
+                    idx,
+                    column,
+                    action_name,
+                    e,
                 )
                 continue
 
@@ -205,7 +211,11 @@ class ExecutorAgent:
             success_count += 1
             logger.info(
                 "Action %d [%s.%s]: SUCCESS — %d rows affected, %d values changed",
-                idx, column, action_name, rows_affected, values_changed,
+                idx,
+                column,
+                action_name,
+                rows_affected,
+                values_changed,
             )
 
         # ── Build result ──────────────────────────────────────────────────
@@ -226,8 +236,14 @@ class ExecutorAgent:
         logger.info(
             "ExecutorAgent finished run=%s | %d success, %d skipped, %d failed | "
             "rows %d→%d, cols %d→%d",
-            run_id, success_count, skip_count, fail_count,
-            rows_before, len(working_df), cols_before, len(working_df.columns),
+            run_id,
+            success_count,
+            skip_count,
+            fail_count,
+            rows_before,
+            len(working_df),
+            cols_before,
+            len(working_df.columns),
         )
 
         return working_df, result

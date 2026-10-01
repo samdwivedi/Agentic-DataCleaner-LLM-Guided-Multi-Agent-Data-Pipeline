@@ -258,8 +258,22 @@ def convert_datatype(df: pd.DataFrame, column: str, params: dict[str, Any]) -> O
     target_dtype = params.get("target_dtype")
     if not target_dtype:
         raise ValueError("convert_datatype requires a 'target_dtype' parameter.")
-        
-    ALLOWED_DTYPES = {"datetime64[ns]", "datetime", "int64", "int32", "int", "float64", "float32", "float", "str", "string", "object", "bool", "category"}
+
+    ALLOWED_DTYPES = {
+        "datetime64[ns]",
+        "datetime",
+        "int64",
+        "int32",
+        "int",
+        "float64",
+        "float32",
+        "float",
+        "str",
+        "string",
+        "object",
+        "bool",
+        "category",
+    }
     if target_dtype not in ALLOWED_DTYPES:
         raise ValueError(f"convert_datatype: target_dtype '{target_dtype}' is not allowed.")
 
@@ -306,32 +320,33 @@ def mask_pii(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
     """Mask PII in a column using basic regex (emails, phone, SSN)."""
     if column not in df.columns:
         raise ValueError(f"Column '{column}' not found.")
-    
+
     result = df.copy()
     non_null_mask = result[column].notna()
     if not non_null_mask.any():
         return df, 0, 0
-        
+
     original = result.loc[non_null_mask, column].astype(str).copy()
-    
+
     import re
-    email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b')
-    phone_pattern = re.compile(r'\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
-    ssn_pattern = re.compile(r'\b\d{3}-\d{2}-\d{4}\b')
-    
+
+    email_pattern = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b")
+    phone_pattern = re.compile(r"\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")
+    ssn_pattern = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
+
     mask_str = params.get("mask", "***REDACTED***")
-    
+
     masked = original.copy()
     masked = masked.str.replace(email_pattern, mask_str, regex=True)
     masked = masked.str.replace(phone_pattern, mask_str, regex=True)
     masked = masked.str.replace(ssn_pattern, mask_str, regex=True)
-    
+
     changed_mask = original != masked
     values_changed = int(changed_mask.sum())
-    
+
     if values_changed > 0:
         result.loc[non_null_mask, column] = masked
-        
+
     return result, 0, values_changed
 
 
@@ -340,18 +355,18 @@ def mask_pii(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
 # ═══════════════════════════════════════════════════════════════════════════════
 
 OPERATION_DISPATCH = {
-    "median_imputation":      median_imputation,
-    "mean_imputation":        mean_imputation,
-    "mode_imputation":        mode_imputation,
-    "constant_imputation":    constant_imputation,
-    "drop_column":            drop_column,
-    "drop_rows":              drop_rows,
-    "drop_outliers":          drop_outliers,
-    "remove_duplicates":      remove_duplicates,
-    "clamp_outliers":         clamp_outliers,
-    "cap_outliers":           cap_outliers,
+    "median_imputation": median_imputation,
+    "mean_imputation": mean_imputation,
+    "mode_imputation": mode_imputation,
+    "constant_imputation": constant_imputation,
+    "drop_column": drop_column,
+    "drop_rows": drop_rows,
+    "drop_outliers": drop_outliers,
+    "remove_duplicates": remove_duplicates,
+    "clamp_outliers": clamp_outliers,
+    "cap_outliers": cap_outliers,
     "standardize_categories": standardize_categories,
-    "convert_datatype":       convert_datatype,
-    "mask_pii":               mask_pii,
-    "none":                   noop,
+    "convert_datatype": convert_datatype,
+    "mask_pii": mask_pii,
+    "none": noop,
 }

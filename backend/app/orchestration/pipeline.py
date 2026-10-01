@@ -24,22 +24,22 @@ from app.persistence.repository import SessionRepository
 logger = logging.getLogger(__name__)
 
 # ── Safety limits for CSV parsing ─────────────────────────────────────────────
-MAX_CSV_ROWS = 500_000       # Half a million rows max
-MAX_CSV_COLUMNS = 200        # 200 columns max
+MAX_CSV_ROWS = 500_000  # Half a million rows max
+MAX_CSV_COLUMNS = 200  # 200 columns max
 MAX_CSV_BYTES = 50 * 1024 * 1024  # 50 MB
 
 
 def _safe_read_csv(data: bytes) -> pd.DataFrame:
     """Parse CSV bytes with safety limits on size, rows, and columns."""
     if len(data) > MAX_CSV_BYTES:
-        raise ValueError(f"CSV file too large ({len(data):,} bytes). Maximum is {MAX_CSV_BYTES:,} bytes.")
-    
-    df = pd.read_csv(io.BytesIO(data))
-    
-    if len(df) > MAX_CSV_ROWS:
         raise ValueError(
-            f"CSV has {len(df):,} rows, exceeding the maximum of {MAX_CSV_ROWS:,}."
+            f"CSV file too large ({len(data):,} bytes). Maximum is {MAX_CSV_BYTES:,} bytes."
         )
+
+    df = pd.read_csv(io.BytesIO(data))
+
+    if len(df) > MAX_CSV_ROWS:
+        raise ValueError(f"CSV has {len(df):,} rows, exceeding the maximum of {MAX_CSV_ROWS:,}.")
     if len(df.columns) > MAX_CSV_COLUMNS:
         raise ValueError(
             f"CSV has {len(df.columns)} columns, exceeding the maximum of {MAX_CSV_COLUMNS}."
@@ -60,12 +60,11 @@ def infer_schema(df: pd.DataFrame) -> ValidationSchema:
 
 
 class PipelineOrchestrator:
-    
     @staticmethod
     def initialize_session(repo: SessionRepository, file_bytes: bytes) -> str:
         # Validate CSV can be parsed and respects limits
         _safe_read_csv(file_bytes)
-            
+
         session_id = str(uuid.uuid4())
         repo.create_session(session_id, file_bytes)
         return session_id
@@ -80,7 +79,7 @@ class PipelineOrchestrator:
         repo.update_report(session_id, "profiler_report", profiler_report.model_dump())
 
         schema = infer_schema(df)
-        
+
         schema_validator = SchemaValidator()
         schema_report = schema_validator.validate(df, schema)
         repo.update_report(session_id, "schema_report", schema_report.model_dump())
@@ -102,65 +101,71 @@ class PipelineOrchestrator:
         a_report = repo.get_report(session_id, "anomaly_report")
 
         import os
+
         config = StrategistConfig(
             endpoint_url=os.environ.get("LLM_PROVIDER_URL", "http://localhost:11434/api/generate"),
-            model_name="llama3"
+            model_name="llama3",
         )
         provider = OllamaProvider(config=config)
         strategist = StrategistAgent(provider=provider)
-        
+
         strategy = strategist.generate_strategy(
             profiler_report_dict=p_report,
             schema_report_dict=s_report,
             anomaly_report_dict=a_report,
         )
-        
+
         repo.update_report(session_id, "strategy_raw", strategy.model_dump())
         return strategy.model_dump()
 
     @staticmethod
-    def validate_strategy(repo: SessionRepository, session_id: str, actions: list[dict[str, Any]]) -> dict[str, Any]:
+    def validate_strategy(
+        repo: SessionRepository, session_id: str, actions: list[dict[str, Any]]
+    ) -> dict[str, Any]:
         csv_bytes = repo.get_original_csv(session_id)
         df = _safe_read_csv(csv_bytes)
         known_columns = set(df.columns)
-        
+
         try:
             p_report = repo.get_report(session_id, "profiler_report")
             column_types = {col["name"]: col["inferred_type"] for col in p_report["columns"]}
         except Exception:
+
             def _map_dtype(d):
-                if "float" in d: return "numeric_float"
-                if "int" in d: return "numeric_int"
-                if "datetime" in d: return "datetime"
+                if "float" in d:
+                    return "numeric_float"
+                if "int" in d:
+                    return "numeric_int"
+                if "datetime" in d:
+                    return "datetime"
                 return "categorical"
+
             column_types = {col: _map_dtype(str(df[col].dtype)) for col in df.columns}
-            
+
         validator = StrategyValidator(
-            known_columns=known_columns,
-            column_types=column_types,
-            total_row_count=len(df)
+            known_columns=known_columns, column_types=column_types, total_row_count=len(df)
         )
-        
+
         raw_strategy = CleaningStrategy(actions=actions)
         validated = validator.validate(raw_strategy)
         repo.update_report(session_id, "strategy_validated", validated.model_dump())
-        
+
         if not validated.is_valid:
             raise ValueError(json.dumps([v.model_dump() for v in validated.violations]))
-            
+
         return validated.model_dump()
 
     @staticmethod
     def execute_strategy(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         validated_dict = repo.get_report(session_id, "strategy_validated")
         validated = ValidatedCleaningStrategy(**validated_dict)
-        
+
         if not validated.is_valid:
             raise ValueError("Cannot execute an invalid strategy.")
 
         csv_bytes = repo.get_original_csv(session_id)
         df = _safe_read_csv(csv_bytes)
-        
+
         executor = ExecutorAgent()
         cleaned_df, result = executor.execute(df, validated)
 
@@ -168,27 +173,34 @@ class PipelineOrchestrator:
         buf = io.BytesIO()
         cleaned_df.to_csv(buf, index=False)
         repo.save_cleaned_csv(session_id, buf.getvalue())
-        
+
         repo.update_report(session_id, "execution_result", result.model_dump())
-        
+
         return result.model_dump()
 
     @staticmethod
     def validate_quality(repo: SessionRepository, session_id: str) -> dict[str, Any]:
         csv_orig = repo.get_original_csv(session_id)
         df_before = _safe_read_csv(csv_orig)
-        
+
         csv_cleaned = repo.get_cleaned_csv(session_id)
         df_after = _safe_read_csv(csv_cleaned)
-        
+
         # We need the inferred schema for the quality assessor
         schema = infer_schema(df_before)
         schema_dict = schema.model_dump()
-        expected_dtypes = {col: rule.get("expected_dtype", "object") for col, rule in schema_dict.get("columns", {}).items()}
-        allowed_cats = {col: rule["allowed_values"] for col, rule in schema_dict.get("columns", {}).items() if rule.get("allowed_values")}
+        expected_dtypes = {
+            col: rule.get("expected_dtype", "object")
+            for col, rule in schema_dict.get("columns", {}).items()
+        }
+        allowed_cats = {
+            col: rule["allowed_values"]
+            for col, rule in schema_dict.get("columns", {}).items()
+            if rule.get("allowed_values")
+        }
 
         assessor = QualityAssessor()
         report = assessor.assess(df_before, df_after, expected_dtypes, allowed_cats)
         repo.update_report(session_id, "quality_report", report.model_dump())
-        
+
         return report.model_dump()

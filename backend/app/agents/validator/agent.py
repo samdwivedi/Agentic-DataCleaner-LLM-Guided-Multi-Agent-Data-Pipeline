@@ -106,21 +106,26 @@ class QualityAssessor:
 
         logger.info(
             "QualityAssessor.assess() — before shape=%s, after shape=%s",
-            df_before.shape, df_after.shape,
+            df_before.shape,
+            df_after.shape,
         )
 
         # ── Compute metrics ───────────────────────────────────────────────
         metrics_before = self._compute_metrics(
-            df_before, expected_dtypes, allowed_categories,
+            df_before,
+            expected_dtypes,
+            allowed_categories,
         )
         metrics_after = self._compute_metrics(
-            df_after, expected_dtypes, allowed_categories,
+            df_after,
+            expected_dtypes,
+            allowed_categories,
         )
 
         # ── Score ─────────────────────────────────────────────────────────
         score_before = self._compute_score(metrics_before)
-        score_after  = self._compute_score(metrics_after)
-        improvement  = round(score_after - score_before, 2)
+        score_after = self._compute_score(metrics_after)
+        improvement = round(score_after - score_before, 2)
 
         metrics_before = DataQualityMetrics(
             **{**metrics_before.model_dump(), "quality_score": score_before}
@@ -134,7 +139,10 @@ class QualityAssessor:
 
         # ── Critical failures ─────────────────────────────────────────────
         criticals = self._detect_critical_failures(
-            metrics_before, metrics_after, score_before, score_after,
+            metrics_before,
+            metrics_after,
+            score_before,
+            score_after,
         )
 
         # ── Verdict ───────────────────────────────────────────────────────
@@ -158,8 +166,10 @@ class QualityAssessor:
 
         logger.info(
             "Quality assessment complete: %.1f → %.1f (%s%.1f) — %s",
-            score_before, score_after,
-            "+" if improvement >= 0 else "", improvement,
+            score_before,
+            score_after,
+            "+" if improvement >= 0 else "",
+            improvement,
             "SUCCESS" if is_successful else "UNSUCCESSFUL",
         )
 
@@ -329,28 +339,33 @@ class QualityAssessor:
             null_count = int(df_after[col].isna().sum())
             if null_count > 0:
                 pct = null_count / len(df_after) * 100 if len(df_after) > 0 else 0
-                severity = IssueSeverity.CRITICAL if pct > 50 else (
-                    IssueSeverity.WARNING if pct > 10 else IssueSeverity.INFO
+                severity = (
+                    IssueSeverity.CRITICAL
+                    if pct > 50
+                    else (IssueSeverity.WARNING if pct > 10 else IssueSeverity.INFO)
                 )
-                issues.append(QualityIssue(
-                    severity=severity,
-                    dimension="missing",
-                    column=col,
-                    message=f"{null_count:,} null values ({pct:.1f}%) remaining.",
-                ))
+                issues.append(
+                    QualityIssue(
+                        severity=severity,
+                        dimension="missing",
+                        column=col,
+                        message=f"{null_count:,} null values ({pct:.1f}%) remaining.",
+                    )
+                )
 
         # ── Duplicates ────────────────────────────────────────────────────
         if metrics_after.duplicate_rows > 0:
             severity = (
-                IssueSeverity.WARNING if metrics_after.duplicate_pct > 5
-                else IssueSeverity.INFO
+                IssueSeverity.WARNING if metrics_after.duplicate_pct > 5 else IssueSeverity.INFO
             )
-            issues.append(QualityIssue(
-                severity=severity,
-                dimension="duplicates",
-                message=f"{metrics_after.duplicate_rows:,} duplicate rows "
-                        f"({metrics_after.duplicate_pct:.1f}%) remaining.",
-            ))
+            issues.append(
+                QualityIssue(
+                    severity=severity,
+                    dimension="duplicates",
+                    message=f"{metrics_after.duplicate_rows:,} duplicate rows "
+                    f"({metrics_after.duplicate_pct:.1f}%) remaining.",
+                )
+            )
 
         # ── Invalid categories ────────────────────────────────────────────
         if allowed_categories:
@@ -359,20 +374,24 @@ class QualityAssessor:
                     non_null = df_after[col].dropna()
                     invalid = non_null[~non_null.isin(allowed)]
                     if len(invalid) > 0:
-                        issues.append(QualityIssue(
-                            severity=IssueSeverity.WARNING,
-                            dimension="categories",
-                            column=col,
-                            message=f"{len(invalid)} values outside allowed set.",
-                        ))
+                        issues.append(
+                            QualityIssue(
+                                severity=IssueSeverity.WARNING,
+                                dimension="categories",
+                                column=col,
+                                message=f"{len(invalid)} values outside allowed set.",
+                            )
+                        )
 
         # ── Outliers ──────────────────────────────────────────────────────
         if metrics_after.outlier_count > 0:
-            issues.append(QualityIssue(
-                severity=IssueSeverity.INFO,
-                dimension="anomalies",
-                message=f"{metrics_after.outlier_count:,} outliers still present.",
-            ))
+            issues.append(
+                QualityIssue(
+                    severity=IssueSeverity.INFO,
+                    dimension="anomalies",
+                    message=f"{metrics_after.outlier_count:,} outliers still present.",
+                )
+            )
 
         return issues
 
@@ -402,53 +421,65 @@ class QualityAssessor:
 
         # 1. Score decreased
         if score_after < score_before:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="score",
-                message=f"Quality score decreased: {score_before:.1f} → {score_after:.1f}.",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="score",
+                    message=f"Quality score decreased: {score_before:.1f} → {score_after:.1f}.",
+                )
+            )
 
         # 2. Missing increased
         if m_after.missing_pct > m_before.missing_pct:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="missing",
-                message=f"Missing percentage increased: "
-                        f"{m_before.missing_pct:.2f}% → {m_after.missing_pct:.2f}%.",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="missing",
+                    message=f"Missing percentage increased: "
+                    f"{m_before.missing_pct:.2f}% → {m_after.missing_pct:.2f}%.",
+                )
+            )
 
         # 3. Duplicates increased
         if m_after.duplicate_pct > m_before.duplicate_pct:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="duplicates",
-                message=f"Duplicate percentage increased: "
-                        f"{m_before.duplicate_pct:.2f}% → {m_after.duplicate_pct:.2f}%.",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="duplicates",
+                    message=f"Duplicate percentage increased: "
+                    f"{m_before.duplicate_pct:.2f}% → {m_after.duplicate_pct:.2f}%.",
+                )
+            )
 
         # 4. All rows deleted
         if m_after.row_count == 0 and m_before.row_count > 0:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="completeness",
-                message="All rows were deleted during cleaning.",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="completeness",
+                    message="All rows were deleted during cleaning.",
+                )
+            )
 
         # 5. All columns deleted
         if m_after.column_count == 0 and m_before.column_count > 0:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="completeness",
-                message="All columns were deleted during cleaning.",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="completeness",
+                    message="All columns were deleted during cleaning.",
+                )
+            )
 
         # 6. Below minimum
         if score_after < self.config.min_acceptable_score:
-            criticals.append(QualityIssue(
-                severity=IssueSeverity.CRITICAL,
-                dimension="score",
-                message=f"Post-cleaning score {score_after:.1f} is below minimum "
-                        f"acceptable threshold ({self.config.min_acceptable_score:.1f}).",
-            ))
+            criticals.append(
+                QualityIssue(
+                    severity=IssueSeverity.CRITICAL,
+                    dimension="score",
+                    message=f"Post-cleaning score {score_after:.1f} is below minimum "
+                    f"acceptable threshold ({self.config.min_acceptable_score:.1f}).",
+                )
+            )
 
         return criticals

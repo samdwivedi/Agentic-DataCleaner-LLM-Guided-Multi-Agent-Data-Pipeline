@@ -13,38 +13,41 @@ from pydantic import BaseModel, Field
 
 # ── Configuration Models ──────────────────────────────────────────────────────
 
+
 class AnomalyConfig(BaseModel):
     """Global configuration for anomaly detection thresholds."""
-    
+
     use_iqr: bool = Field(
-        True, description="Whether to use the Interquartile Range (IQR) method for outlier detection."
+        True,
+        description="Whether to use the Interquartile Range (IQR) method for outlier detection.",
     )
     iqr_multiplier: float = Field(
         1.5, description="Multiplier for the IQR to determine boundaries (typically 1.5)."
     )
-    
+
     use_zscore: bool = Field(
         True, description="Whether to use the Z-score method for outlier detection."
     )
     zscore_threshold: float = Field(
         3.0, description="The Z-score threshold beyond which a value is considered an outlier."
     )
-    
+
     use_robust_zscore: bool = Field(
-        False, description="Use Median and MAD instead of Mean and STD for Z-score calculation (more robust to extreme outliers)."
+        False,
+        description="Use Median and MAD instead of Mean and STD for Z-score calculation (more robust to extreme outliers).",
     )
 
 
 # ── Report Models ─────────────────────────────────────────────────────────────
 
+
 class ColumnAnomalyResult(BaseModel, frozen=True):
     """Anomaly detection results for a single numerical column."""
-    
-    column_name: str = Field(
-        ..., description="The name of the column analyzed."
-    )
+
+    column_name: str = Field(..., description="The name of the column analyzed.")
     method: str = Field(
-        ..., description="The method(s) used to flag outliers (e.g., 'IQR', 'Z-score', 'IQR + Z-score')."
+        ...,
+        description="The method(s) used to flag outliers (e.g., 'IQR', 'Z-score', 'IQR + Z-score').",
     )
     outlier_count: int = Field(
         ..., description="Total number of unique rows flagged as outliers in this column."
@@ -52,7 +55,7 @@ class ColumnAnomalyResult(BaseModel, frozen=True):
     outlier_pct: float = Field(
         ..., description="Percentage of non-null values flagged as outliers (0-100)."
     )
-    
+
     # Boundary thresholds (optional, depending on methods used)
     iqr_lower_bound: float | None = Field(
         None, description="The calculated lower boundary for IQR-based detection."
@@ -63,7 +66,7 @@ class ColumnAnomalyResult(BaseModel, frozen=True):
     zscore_threshold_used: float | None = Field(
         None, description="The Z-score threshold applied to this column."
     )
-    
+
     # For robust z-score vs standard z-score
     is_robust_zscore: bool | None = Field(
         None, description="True if robust Z-score (MAD) was used, False if standard (STD)."
@@ -72,16 +75,12 @@ class ColumnAnomalyResult(BaseModel, frozen=True):
 
 class AnomalyReport(BaseModel, frozen=True):
     """
-    Immutable anomaly detection report containing dataset-level summaries and 
+    Immutable anomaly detection report containing dataset-level summaries and
     per-column anomaly results.
     """
-    
-    total_rows: int = Field(
-        ..., description="Total number of rows in the DataFrame."
-    )
-    columns_analyzed: int = Field(
-        ..., description="Total number of numerical columns analyzed."
-    )
+
+    total_rows: int = Field(..., description="Total number of rows in the DataFrame.")
+    columns_analyzed: int = Field(..., description="Total number of numerical columns analyzed.")
     total_outliers_found: int = Field(
         ..., description="Sum of outlier counts across all analyzed columns."
     )
@@ -103,7 +102,7 @@ class AnomalyReport(BaseModel, frozen=True):
             f"  Columns analyzed: {self.columns_analyzed}",
             f"  Total outliers found (sum across columns): {self.total_outliers_found:,}",
         ]
-        
+
         if self.column_reports:
             lines.append("\nPer-Column Anomalies:")
             for report in self.column_reports:
@@ -114,5 +113,5 @@ class AnomalyReport(BaseModel, frozen=True):
                     )
             if all(r.outlier_count == 0 for r in self.column_reports):
                 lines.append("  No outliers detected in any analyzed columns.")
-                
+
         return "\n".join(lines)

@@ -30,11 +30,11 @@ LOG_MAX_BYTES = 5 * 1024 * 1024
 LOG_BACKUP_COUNT = 3
 # ── ANSI colour codes for console output ─────────────────────────────────────
 _COLOURS = {
-    "DEBUG":    "\033[36m",   # cyan
-    "INFO":     "\033[32m",   # green
-    "WARNING":  "\033[33m",   # yellow
-    "ERROR":    "\033[31m",   # red
-    "CRITICAL": "\033[35m",   # magenta
+    "DEBUG": "\033[36m",  # cyan
+    "INFO": "\033[32m",  # green
+    "WARNING": "\033[33m",  # yellow
+    "ERROR": "\033[31m",  # red
+    "CRITICAL": "\033[35m",  # magenta
 }
 _RESET = "\033[0m"
 
@@ -57,14 +57,14 @@ class _ColourFormatter(logging.Formatter):
 class _PlainFormatter(logging.Formatter):
     """Plain formatter for the log file (no ANSI codes)."""
 
-    _FMT  = "%(asctime)s  %(levelname)-8s  %(name)s – %(message)s"
+    _FMT = "%(asctime)s  %(levelname)-8s  %(name)s – %(message)s"
     _DATE = "%Y-%m-%d %H:%M:%S"
 
     def __init__(self) -> None:
         super().__init__(fmt=self._FMT, datefmt=self._DATE)
 
 
-_configured: bool = False   # guard against double-setup
+_configured: bool = False  # guard against double-setup
 
 
 def setup_logging() -> None:
@@ -91,7 +91,7 @@ def setup_logging() -> None:
         encoding="utf-8",
     )
     file_handler.setFormatter(_PlainFormatter())
-    file_handler.setLevel(logging.DEBUG)   # capture everything to file
+    file_handler.setLevel(logging.DEBUG)  # capture everything to file
 
     # ── Console handler ──────────────────────────────────────────────────────
     console_handler = logging.StreamHandler(sys.stderr)

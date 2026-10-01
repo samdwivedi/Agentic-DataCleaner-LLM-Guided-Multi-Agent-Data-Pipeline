@@ -40,7 +40,7 @@ class AnomalyDetector:
 
     def detect(self, df: pd.DataFrame) -> AnomalyReport:
         """
-        Run anomaly detection on numerical columns of *df* and return an 
+        Run anomaly detection on numerical columns of *df* and return an
         immutable ``AnomalyReport``.
 
         Parameters
@@ -88,28 +88,29 @@ class AnomalyDetector:
 
         logger.info(
             "Anomaly detection complete: %d columns analyzed, %d outliers found total",
-            columns_analyzed, total_outliers_found
+            columns_analyzed,
+            total_outliers_found,
         )
         return report
 
     def _analyze_column(self, col_name: str, series: pd.Series) -> ColumnAnomalyResult | None:
         """Analyze a single numerical series for outliers using configured methods."""
-        
+
         # Drop NaNs for statistical calculations
         clean_series = series.dropna()
         n = len(clean_series)
-        
+
         # We need at least some data to compute stats
         if n == 0:
             return None
 
         # Cast to float to avoid integer division issues during stats calculation
         vals = clean_series.astype(float)
-        
+
         # Outlier masks
         iqr_mask = pd.Series(False, index=vals.index)
         zscore_mask = pd.Series(False, index=vals.index)
-        
+
         iqr_lower = None
         iqr_upper = None
         used_zscore_thresh = None
@@ -121,12 +122,12 @@ class AnomalyDetector:
             q1 = vals.quantile(0.25)
             q3 = vals.quantile(0.75)
             iqr = q3 - q1
-            
-            # If IQR is exactly 0 (e.g. constant column), IQR method flags everything 
+
+            # If IQR is exactly 0 (e.g. constant column), IQR method flags everything
             # outside the single value. This is statistically correct but we must be careful.
             iqr_lower = float(q1 - (self.config.iqr_multiplier * iqr))
             iqr_upper = float(q3 + (self.config.iqr_multiplier * iqr))
-            
+
             iqr_mask = (vals < iqr_lower) | (vals > iqr_upper)
             methods_used.append("IQR")
 
@@ -134,7 +135,7 @@ class AnomalyDetector:
         if self.config.use_zscore and n >= 2:
             used_zscore_thresh = float(self.config.zscore_threshold)
             is_robust = self.config.use_robust_zscore
-            
+
             if is_robust:
                 # Robust Z-score: 0.6745 * (x - median) / MAD
                 median_val = vals.median()
@@ -158,7 +159,7 @@ class AnomalyDetector:
         outlier_pct = (outlier_count / n * 100.0) if n > 0 else 0.0
 
         if not methods_used:
-            return None # e.g. n < 2 or all methods disabled
+            return None  # e.g. n < 2 or all methods disabled
 
         return ColumnAnomalyResult(
             column_name=col_name,

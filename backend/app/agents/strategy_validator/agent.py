@@ -158,9 +158,7 @@ class StrategyValidator:
         has_errors = any(v.severity == ViolationSeverity.ERROR for v in violations)
         is_valid = not has_errors
 
-        validated_actions = (
-            [a.model_dump() for a in strategy.actions] if is_valid else []
-        )
+        validated_actions = [a.model_dump() for a in strategy.actions] if is_valid else []
 
         result = ValidatedCleaningStrategy(
             is_valid=is_valid,
@@ -232,9 +230,11 @@ class StrategyValidator:
                     code=ViolationCode.UNKNOWN_COLUMN,
                     severity=ViolationSeverity.ERROR,
                     column=action.column,
-                    action=action.action.value if isinstance(action.action, ActionRegistry) else str(action.action),
+                    action=action.action.value
+                    if isinstance(action.action, ActionRegistry)
+                    else str(action.action),
                     message=f"Column '{action.column}' does not exist in the dataset. "
-                            f"Known columns: {sorted(self.known_columns)}",
+                    f"Known columns: {sorted(self.known_columns)}",
                 )
             )
 
@@ -242,7 +242,9 @@ class StrategyValidator:
         self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Verify the action is type-compatible with the target column."""
-        action_str = action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
+        action_str = (
+            action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
+        )
         allowed_types = ACTION_DTYPE_COMPATIBILITY.get(action_str)
 
         # None means any type is acceptable
@@ -272,7 +274,9 @@ class StrategyValidator:
         self, action: CleaningAction, violations: list[StrategyViolation]
     ) -> None:
         """Validate action-specific parameters."""
-        action_str = action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
+        action_str = (
+            action.action.value if isinstance(action.action, ActionRegistry) else str(action.action)
+        )
         params = action.parameters or {}
 
         # constant_imputation requires a 'value' parameter
@@ -325,7 +329,9 @@ class StrategyValidator:
                     code=ViolationCode.INVALID_CONFIDENCE,
                     severity=ViolationSeverity.ERROR,
                     column=action.column,
-                    action=action.action.value if isinstance(action.action, ActionRegistry) else str(action.action),
+                    action=action.action.value
+                    if isinstance(action.action, ActionRegistry)
+                    else str(action.action),
                     message=(
                         f"Confidence {action.confidence:.2f} is below the minimum "
                         f"threshold ({self.thresholds.min_confidence:.2f})."
@@ -338,7 +344,9 @@ class StrategyValidator:
                     code=ViolationCode.INVALID_CONFIDENCE,
                     severity=ViolationSeverity.ERROR,
                     column=action.column,
-                    action=action.action.value if isinstance(action.action, ActionRegistry) else str(action.action),
+                    action=action.action.value
+                    if isinstance(action.action, ActionRegistry)
+                    else str(action.action),
                     message=(
                         f"Confidence {action.confidence:.2f} exceeds the maximum "
                         f"threshold ({self.thresholds.max_confidence:.2f})."

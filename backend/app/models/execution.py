@@ -20,14 +20,17 @@ from pydantic import BaseModel, Field
 
 # ── Execution Status ──────────────────────────────────────────────────────────
 
+
 class ExecutionStatus(str, Enum):
     """Outcome of a single operation."""
-    SUCCESS  = "success"
-    SKIPPED  = "skipped"   # e.g. no-op because no nulls to fill
-    FAILED   = "failed"    # operation raised but was caught safely
+
+    SUCCESS = "success"
+    SKIPPED = "skipped"  # e.g. no-op because no nulls to fill
+    FAILED = "failed"  # operation raised but was caught safely
 
 
 # ── Per-Operation Log Entry ───────────────────────────────────────────────────
+
 
 class ExecutionLogEntry(BaseModel, frozen=True):
     """
@@ -39,25 +42,32 @@ class ExecutionLogEntry(BaseModel, frozen=True):
     """
 
     run_id: str = Field(
-        ..., description="UUID for this execution run (shared across all entries in a run).",
+        ...,
+        description="UUID for this execution run (shared across all entries in a run).",
     )
     action_index: int = Field(
-        ..., description="0-based index of this action within the strategy.",
+        ...,
+        description="0-based index of this action within the strategy.",
     )
     column: str = Field(
-        ..., description="Column this operation targets.",
+        ...,
+        description="Column this operation targets.",
     )
     action: str = Field(
-        ..., description="The action that was executed (e.g. 'median_imputation').",
+        ...,
+        description="The action that was executed (e.g. 'median_imputation').",
     )
     parameters: dict[str, Any] = Field(
-        default_factory=dict, description="Parameters passed to the operation.",
+        default_factory=dict,
+        description="Parameters passed to the operation.",
     )
     rows_affected: int = Field(
-        0, description="Number of rows modified or removed by this operation.",
+        0,
+        description="Number of rows modified or removed by this operation.",
     )
     values_changed: int = Field(
-        0, description="Number of individual cell values that were changed.",
+        0,
+        description="Number of individual cell values that were changed.",
     )
     before_state: dict[str, Any] = Field(
         default_factory=dict,
@@ -68,20 +78,25 @@ class ExecutionLogEntry(BaseModel, frozen=True):
         description="Snapshot of relevant column statistics AFTER the operation.",
     )
     execution_status: ExecutionStatus = Field(
-        ExecutionStatus.SUCCESS, description="Outcome of this operation.",
+        ExecutionStatus.SUCCESS,
+        description="Outcome of this operation.",
     )
     error_message: str | None = Field(
-        None, description="Error details if execution_status is FAILED.",
+        None,
+        description="Error details if execution_status is FAILED.",
     )
     reason: str = Field(
-        "", description="The LLM's stated reason for proposing this action.",
+        "",
+        description="The LLM's stated reason for proposing this action.",
     )
     confidence: float = Field(
-        0.0, description="The LLM's confidence score for this action.",
+        0.0,
+        description="The LLM's confidence score for this action.",
     )
 
 
 # ── Overall Execution Result ──────────────────────────────────────────────────
+
 
 class ExecutionResult(BaseModel, frozen=True):
     """
@@ -92,37 +107,48 @@ class ExecutionResult(BaseModel, frozen=True):
     """
 
     run_id: str = Field(
-        ..., description="UUID for this execution run.",
+        ...,
+        description="UUID for this execution run.",
     )
     total_actions: int = Field(
-        0, description="Total number of actions attempted.",
+        0,
+        description="Total number of actions attempted.",
     )
     successful_actions: int = Field(
-        0, description="Number of actions that completed successfully.",
+        0,
+        description="Number of actions that completed successfully.",
     )
     skipped_actions: int = Field(
-        0, description="Number of actions that were no-ops.",
+        0,
+        description="Number of actions that were no-ops.",
     )
     failed_actions: int = Field(
-        0, description="Number of actions that failed safely.",
+        0,
+        description="Number of actions that failed safely.",
     )
     total_rows_before: int = Field(
-        0, description="Row count of the DataFrame before execution.",
+        0,
+        description="Row count of the DataFrame before execution.",
     )
     total_rows_after: int = Field(
-        0, description="Row count of the DataFrame after execution.",
+        0,
+        description="Row count of the DataFrame after execution.",
     )
     total_columns_before: int = Field(
-        0, description="Column count before execution.",
+        0,
+        description="Column count before execution.",
     )
     total_columns_after: int = Field(
-        0, description="Column count after execution.",
+        0,
+        description="Column count after execution.",
     )
     log_entries: list[ExecutionLogEntry] = Field(
-        default_factory=list, description="Per-action execution log entries.",
+        default_factory=list,
+        description="Per-action execution log entries.",
     )
     executor_version: str = Field(
-        "1.0.0", description="Semantic version of the executor engine.",
+        "1.0.0",
+        description="Semantic version of the executor engine.",
     )
 
     def summary_text(self) -> str:
@@ -140,7 +166,5 @@ class ExecutionResult(BaseModel, frozen=True):
             lines.append("\nFailed Actions:")
             for entry in self.log_entries:
                 if entry.execution_status == ExecutionStatus.FAILED:
-                    lines.append(
-                        f"  - [{entry.column}] {entry.action}: {entry.error_message}"
-                    )
+                    lines.append(f"  - [{entry.column}] {entry.action}: {entry.error_message}")
         return "\n".join(lines)

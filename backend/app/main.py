@@ -21,8 +21,10 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["20/minute"])
 # ── Security: Request size limiter ────────────────────────────────────────────
 MAX_REQUEST_BODY_BYTES = 55 * 1024 * 1024  # 55 MB (slightly above the 50 MB CSV limit)
 
+
 class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
     """Reject requests with bodies larger than MAX_REQUEST_BODY_BYTES."""
+
     async def dispatch(self, request: Request, call_next):
         content_length = request.headers.get("content-length")
         if content_length and int(content_length) > MAX_REQUEST_BODY_BYTES:
@@ -37,6 +39,7 @@ class RequestSizeLimitMiddleware(BaseHTTPMiddleware):
 # ── Security: Response headers ────────────────────────────────────────────────
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     """Add security-related response headers to every response."""
+
     async def dispatch(self, request: Request, call_next):
         response = await call_next(request)
         response.headers["X-Content-Type-Options"] = "nosniff"
@@ -53,20 +56,21 @@ async def lifespan(app: FastAPI):
     # Setup global logging
     setup_logging()
     logger = logging.getLogger(__name__)
-    
+
     # Initialize Database Tables
     logger.info("Initializing database tables...")
     Base.metadata.create_all(bind=engine)
     logger.info("Database tables initialized.")
-    
+
     yield
     logger.info("Shutting down AI Data Cleaning Agent API")
+
 
 app = FastAPI(
     title="AI Data Cleaning Agent API",
     version="1.0.0",
     description="Multi-agent system for automated data profiling, strategy generation, and deterministic execution.",
-    lifespan=lifespan
+    lifespan=lifespan,
 )
 
 # Register SlowAPI
@@ -94,14 +98,13 @@ app.include_router(datasets.router)
 
 from fastapi.responses import JSONResponse
 
+
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logger = logging.getLogger(__name__)
     logger.exception("Unhandled exception: %s", exc)
-    return JSONResponse(
-        status_code=500,
-        content={"detail": "Internal Server Error"}
-    )
+    return JSONResponse(status_code=500, content={"detail": "Internal Server Error"})
+
 
 @app.get("/health", summary="Health check endpoint")
 async def health():

@@ -46,16 +46,17 @@ logger = logging.getLogger(__name__)
 _PROFILER_VERSION = "3.0.0"
 
 # Thresholds for flagging
-_HIGH_MISSING_THRESHOLD      = 50.0   # % missing → flag
-_LOW_VARIANCE_THRESHOLD      = 1e-10  # std → near-constant flag
-_HIGH_CARDINALITY_THRESHOLD  = 0.95   # unique/non-null ratio → flag
-_CONSTANT_THRESHOLD          = 1      # unique count → constant flag
-_SKEWNESS_THRESHOLD          = 2.0    # |skew| > this → flag
-_ZERO_HEAVY_THRESHOLD        = 80.0   # % zeros → flag
-_ID_CARDINALITY_THRESHOLD    = 0.98   # unique/non-null ≥ this → id candidate
+_HIGH_MISSING_THRESHOLD = 50.0  # % missing → flag
+_LOW_VARIANCE_THRESHOLD = 1e-10  # std → near-constant flag
+_HIGH_CARDINALITY_THRESHOLD = 0.95  # unique/non-null ratio → flag
+_CONSTANT_THRESHOLD = 1  # unique count → constant flag
+_SKEWNESS_THRESHOLD = 2.0  # |skew| > this → flag
+_ZERO_HEAVY_THRESHOLD = 80.0  # % zeros → flag
+_ID_CARDINALITY_THRESHOLD = 0.98  # unique/non-null ≥ this → id candidate
 
 
 # ── Main Engine ───────────────────────────────────────────────────────────────
+
 
 class ProfilerAgent:
     """
@@ -74,7 +75,7 @@ class ProfilerAgent:
             raise ValueError("top_n must be ≥ 1")
         if least_n < 1:
             raise ValueError("least_n must be ≥ 1")
-        self._top_n   = top_n
+        self._top_n = top_n
         self._least_n = least_n
 
     # ── Public API ────────────────────────────────────────────────────────────
@@ -104,21 +105,18 @@ class ProfilerAgent:
         if not isinstance(df, pd.DataFrame):
             raise TypeError(f"Expected pd.DataFrame, got {type(df).__name__}")
 
-        logger.info(
-            "ProfilerAgent.profile() → shape=%s", df.shape
-        )
+        logger.info("ProfilerAgent.profile() → shape=%s", df.shape)
 
         # ── Protect the caller's DataFrame ───────────────────────────────────
         work: pd.DataFrame = df.copy(deep=True)
 
         # ── Dataset-level artefacts ───────────────────────────────────────────
-        meta       = self._build_meta(work)
+        meta = self._build_meta(work)
         duplicates = self._build_duplicate_info(work)
 
         # ── Per-column profiles ───────────────────────────────────────────────
         col_profiles: list[ColumnProfile] = [
-            self._profile_column(work[col], meta.row_count)
-            for col in work.columns
+            self._profile_column(work[col], meta.row_count) for col in work.columns
         ]
 
         # ── Problematic column detection ──────────────────────────────────────
@@ -136,32 +134,28 @@ class ProfilerAgent:
 
         logger.info(
             "Profiling complete: %d columns, %d problematic",
-            len(col_profiles), len(problematic),
+            len(col_profiles),
+            len(problematic),
         )
         return report
 
     # ── Dataset metadata ──────────────────────────────────────────────────────
 
     def _build_meta(self, df: pd.DataFrame) -> DatasetMeta:
-        row_count    = len(df)
+        row_count = len(df)
         column_count = len(df.columns)
-        total_cells  = row_count * column_count
+        total_cells = row_count * column_count
         total_missing = int(df.isna().sum().sum())
-        total_missing_pct = (
-            (total_missing / total_cells * 100) if total_cells > 0 else 0.0
-        )
+        total_missing_pct = (total_missing / total_cells * 100) if total_cells > 0 else 0.0
         memory_bytes = int(df.memory_usage(deep=True).sum())
 
         # Count by broad dtype category
-        numeric_cols    = df.select_dtypes(include=[np.number]).columns
-        datetime_cols   = df.select_dtypes(include=["datetime", "datetimetz"]).columns
-        boolean_cols    = df.select_dtypes(include=["bool"]).columns
-        categorical_cols = df.select_dtypes(
-            include=["object", "category", "string"]
-        ).columns
+        numeric_cols = df.select_dtypes(include=[np.number]).columns
+        datetime_cols = df.select_dtypes(include=["datetime", "datetimetz"]).columns
+        boolean_cols = df.select_dtypes(include=["bool"]).columns
+        categorical_cols = df.select_dtypes(include=["object", "category", "string"]).columns
         other_count = column_count - (
-            len(numeric_cols) + len(datetime_cols)
-            + len(boolean_cols) + len(categorical_cols)
+            len(numeric_cols) + len(datetime_cols) + len(boolean_cols) + len(categorical_cols)
         )
 
         # dtypes_summary: dtype string → count
@@ -185,9 +179,9 @@ class ProfilerAgent:
     # ── Duplicate info ────────────────────────────────────────────────────────
 
     def _build_duplicate_info(self, df: pd.DataFrame) -> DuplicateInfo:
-        dup_mask  = df.duplicated(keep="first")
+        dup_mask = df.duplicated(keep="first")
         dup_count = int(dup_mask.sum())
-        dup_pct   = (dup_count / len(df) * 100) if len(df) > 0 else 0.0
+        dup_pct = (dup_count / len(df) * 100) if len(df) > 0 else 0.0
         return DuplicateInfo(
             duplicate_row_count=dup_count,
             duplicate_row_pct=round(dup_pct, 4),
@@ -196,29 +190,25 @@ class ProfilerAgent:
 
     # ── Per-column profiling ──────────────────────────────────────────────────
 
-    def _profile_column(
-        self, series: pd.Series, row_count: int
-    ) -> ColumnProfile:
+    def _profile_column(self, series: pd.Series, row_count: int) -> ColumnProfile:
         """Dispatch to numeric or categorical profiler based on dtype."""
 
-        name         = str(series.name)
-        dtype_str    = str(series.dtype)
-        dtype_kind   = series.dtype.kind if hasattr(series.dtype, "kind") else "O"
+        name = str(series.name)
+        dtype_str = str(series.dtype)
+        dtype_kind = series.dtype.kind if hasattr(series.dtype, "kind") else "O"
 
-        non_null     = series.dropna()
+        non_null = series.dropna()
         non_null_cnt = int(non_null.count())
-        missing_cnt  = int(series.isna().sum())
-        missing_pct  = (missing_cnt / row_count * 100) if row_count > 0 else 0.0
-        unique_cnt   = int(non_null.nunique())
-        unique_pct   = (
-            (unique_cnt / non_null_cnt * 100) if non_null_cnt > 0 else 0.0
-        )
+        missing_cnt = int(series.isna().sum())
+        missing_pct = (missing_cnt / row_count * 100) if row_count > 0 else 0.0
+        unique_cnt = int(non_null.nunique())
+        unique_pct = (unique_cnt / non_null_cnt * 100) if non_null_cnt > 0 else 0.0
 
         # Determine inferred type
         inferred = self._infer_type(series, unique_cnt, non_null_cnt, dtype_kind)
 
         # Numeric stats
-        numerical_stats:   NumericalStats | None   = None
+        numerical_stats: NumericalStats | None = None
         categorical_stats: CategoricalStats | None = None
         value_min: str | None = None
         value_max: str | None = None
@@ -227,16 +217,14 @@ class ProfilerAgent:
         is_bool = series.dtype == bool or dtype_str in ("bool", "boolean")
 
         if pd.api.types.is_numeric_dtype(series) and not is_bool:
-            numerical_stats, value_min, value_max = self._build_numerical_stats(
-                non_null, row_count
-            )
+            numerical_stats, value_min, value_max = self._build_numerical_stats(non_null, row_count)
         else:
             categorical_stats = self._build_categorical_stats(non_null, non_null_cnt)
             if len(non_null) > 0:
                 try:
                     sorted_vals = sorted(non_null.dropna().unique().tolist(), key=str)
-                    value_min   = str(sorted_vals[0])
-                    value_max   = str(sorted_vals[-1])
+                    value_min = str(sorted_vals[0])
+                    value_max = str(sorted_vals[-1])
                 except Exception:
                     pass
 
@@ -267,22 +255,22 @@ class ProfilerAgent:
     def _detect_pii(self, series: pd.Series) -> tuple[bool, list[str]]:
         """Detect PII (emails, phone numbers, SSNs) in a text column via regex sampling."""
         pii_types = set()
-        
+
         if series.empty or not pd.api.types.is_object_dtype(series):
             return False, []
-            
+
         non_nulls = series.dropna()
         if non_nulls.empty:
             return False, []
-            
+
         # Sample up to 500 rows for regex checking
         sample_size = min(500, len(non_nulls))
         sample = non_nulls.astype(str).sample(sample_size, random_state=42)
-        
-        email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b')
-        phone_pattern = re.compile(r'\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
-        ssn_pattern = re.compile(r'\b\d{3}-\d{2}-\d{4}\b')
-        
+
+        email_pattern = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b")
+        phone_pattern = re.compile(r"\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b")
+        ssn_pattern = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
+
         for val in sample:
             if email_pattern.search(val):
                 pii_types.add("email")
@@ -290,7 +278,7 @@ class ProfilerAgent:
                 pii_types.add("phone")
             if ssn_pattern.search(val):
                 pii_types.add("ssn")
-                
+
         return len(pii_types) > 0, list(pii_types)
 
     # ── Numerical statistics ──────────────────────────────────────────────────
@@ -309,33 +297,44 @@ class ProfilerAgent:
         if n == 0:
             # All-null column → return zero stats
             stats = NumericalStats(
-                mean=0.0, median=0.0, std=0.0, min=0.0, max=0.0,
-                q1=0.0, q3=0.0, iqr=0.0,
-                skewness=0.0, kurtosis=0.0,
-                zero_count=0, zero_pct=0.0,
-                negative_count=0, negative_pct=0.0,
-                positive_count=0, positive_pct=0.0,
-                sum=0.0, variance=0.0,
+                mean=0.0,
+                median=0.0,
+                std=0.0,
+                min=0.0,
+                max=0.0,
+                q1=0.0,
+                q3=0.0,
+                iqr=0.0,
+                skewness=0.0,
+                kurtosis=0.0,
+                zero_count=0,
+                zero_pct=0.0,
+                negative_count=0,
+                negative_pct=0.0,
+                positive_count=0,
+                positive_pct=0.0,
+                sum=0.0,
+                variance=0.0,
             )
             return stats, None, None
 
         # Cast to float for uniform arithmetic
         vals = non_null.astype(float)
 
-        mean_val   = float(vals.mean())
+        mean_val = float(vals.mean())
         median_val = float(vals.median())
-        std_val    = float(vals.std(ddof=1)) if n > 1 else 0.0
-        var_val    = float(vals.var(ddof=1)) if n > 1 else 0.0
-        min_val    = float(vals.min())
-        max_val    = float(vals.max())
-        sum_val    = float(vals.sum())
+        std_val = float(vals.std(ddof=1)) if n > 1 else 0.0
+        var_val = float(vals.var(ddof=1)) if n > 1 else 0.0
+        min_val = float(vals.min())
+        max_val = float(vals.max())
+        sum_val = float(vals.sum())
 
-        q1  = float(vals.quantile(0.25))
-        q3  = float(vals.quantile(0.75))
+        q1 = float(vals.quantile(0.25))
+        q3 = float(vals.quantile(0.75))
         iqr = round(q3 - q1, 10)
 
         # Skewness / kurtosis (pandas uses Fisher definitions)
-        skewness = float(vals.skew())   if n >= 3 else 0.0
+        skewness = float(vals.skew()) if n >= 3 else 0.0
         kurtosis = float(vals.kurtosis()) if n >= 4 else 0.0
 
         # Handle NaN from uniform distributions
@@ -343,11 +342,11 @@ class ProfilerAgent:
         kurtosis = 0.0 if math.isnan(kurtosis) else kurtosis
 
         # Zero / negative / positive counts
-        zero_count     = int((vals == 0).sum())
+        zero_count = int((vals == 0).sum())
         negative_count = int((vals < 0).sum())
         positive_count = int((vals > 0).sum())
 
-        zero_pct     = round(zero_count     / row_count * 100, 4)
+        zero_pct = round(zero_count / row_count * 100, 4)
         negative_pct = round(negative_count / row_count * 100, 4)
         positive_pct = round(positive_count / row_count * 100, 4)
 
@@ -404,8 +403,10 @@ class ProfilerAgent:
 
         def sanitize_val(v):
             if isinstance(v, str):
-                v = v[:100] # Truncate long strings
-                v = v.replace("`", "").replace("{", "").replace("}", "") # Strip markdown/json structural chars
+                v = v[:100]  # Truncate long strings
+                v = (
+                    v.replace("`", "").replace("{", "").replace("}", "")
+                )  # Strip markdown/json structural chars
             return v
 
         top_values: list[CategoryFrequency] = [
@@ -426,13 +427,13 @@ class ProfilerAgent:
             for val, cnt in vc.tail(self._least_n).items()
         ]
 
-        mode_val   = vc.index[0] if len(vc) > 0 else None
-        mode_count = int(vc.iloc[0])  if len(vc) > 0 else 0
-        mode_freq  = round(mode_count / non_null_count, 6) if non_null_count > 0 else 0.0
+        mode_val = vc.index[0] if len(vc) > 0 else None
+        mode_count = int(vc.iloc[0]) if len(vc) > 0 else 0
+        mode_freq = round(mode_count / non_null_count, 6) if non_null_count > 0 else 0.0
 
         # String-length stats (only for actual string columns)
         avg_len = max_len = min_len = None
-        
+
         if not non_null.empty and non_null.map(lambda value: isinstance(value, str)).all():
             try:
                 lengths = non_null.map(len)
@@ -514,9 +515,7 @@ class ProfilerAgent:
 
     # ── Problematic column detection ──────────────────────────────────────────
 
-    def _detect_problematic(
-        self, profiles: list[ColumnProfile]
-    ) -> list[ProblematicColumn]:
+    def _detect_problematic(self, profiles: list[ColumnProfile]) -> list[ProblematicColumn]:
         """
         Scan all column profiles and accumulate data-quality flags.
 
@@ -542,15 +541,11 @@ class ProfilerAgent:
 
             # High missing
             elif col.missing_pct >= _HIGH_MISSING_THRESHOLD:
-                reasons.append(
-                    f"High missing rate: {col.missing_pct:.1f}% of values are null."
-                )
+                reasons.append(f"High missing rate: {col.missing_pct:.1f}% of values are null.")
 
             # Constant column
             if col.inferred_type == "constant":
-                reasons.append(
-                    "Constant column: only one unique value across all rows."
-                )
+                reasons.append("Constant column: only one unique value across all rows.")
 
             # Numeric-specific flags
             if col.numerical_stats is not None:
@@ -571,9 +566,7 @@ class ProfilerAgent:
 
                 # Zero-heavy
                 if ns.zero_pct >= _ZERO_HEAVY_THRESHOLD:
-                    reasons.append(
-                        f"Zero-heavy: {ns.zero_pct:.1f}% of total rows are zero."
-                    )
+                    reasons.append(f"Zero-heavy: {ns.zero_pct:.1f}% of total rows are zero.")
 
             # Categorical-specific flags
             if col.categorical_stats is not None:
@@ -583,8 +576,7 @@ class ProfilerAgent:
                 if (
                     col.inferred_type not in ("id_candidate", "text")
                     and col.non_null_count > 0
-                    and (col.unique_count / col.non_null_count)
-                    >= _HIGH_CARDINALITY_THRESHOLD
+                    and (col.unique_count / col.non_null_count) >= _HIGH_CARDINALITY_THRESHOLD
                 ):
                     reasons.append(
                         f"High cardinality: {col.unique_count} unique values "

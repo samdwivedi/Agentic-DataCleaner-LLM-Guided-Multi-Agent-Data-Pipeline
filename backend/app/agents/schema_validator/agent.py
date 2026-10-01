@@ -51,7 +51,7 @@ class SchemaValidator:
         """
         if not isinstance(df, pd.DataFrame):
             raise TypeError(f"Expected pd.DataFrame, got {type(df).__name__}")
-        
+
         if not isinstance(schema, ValidationSchema):
             raise TypeError(f"Expected ValidationSchema, got {type(schema).__name__}")
 
@@ -69,7 +69,7 @@ class SchemaValidator:
                     ValidationViolation(
                         column=req_col,
                         rule="required_column",
-                        message=f"Required column '{req_col}' is missing from the dataset."
+                        message=f"Required column '{req_col}' is missing from the dataset.",
                     )
                 )
 
@@ -79,10 +79,10 @@ class SchemaValidator:
                 # If a column has rules but is missing, we don't evaluate the rules,
                 # but it should have been caught by required_columns if it was mandatory.
                 continue
-            
+
             columns_checked += 1
             series = df[col_name]
-            
+
             self._validate_column(col_name, series, rule, violations)
 
         # ── 3. Assemble report ────────────────────────────────────────────────
@@ -96,34 +96,31 @@ class SchemaValidator:
             validator_version=_VALIDATOR_VERSION,
         )
 
-        logger.info(
-            "Validation complete: is_valid=%s, violations=%d",
-            is_valid, len(violations)
-        )
+        logger.info("Validation complete: is_valid=%s, violations=%d", is_valid, len(violations))
         return report
 
     def _validate_column(
-        self, 
-        col_name: str, 
-        series: pd.Series, 
-        rule: ColumnRule, 
-        violations: list[ValidationViolation]
+        self,
+        col_name: str,
+        series: pd.Series,
+        rule: ColumnRule,
+        violations: list[ValidationViolation],
     ) -> None:
         """Apply a ColumnRule to a specific pandas Series, accumulating violations."""
-        
+
         # 1. Nullability
         null_mask = series.isna()
         null_count = null_mask.sum()
-        
+
         if not rule.nullable and null_count > 0:
             violations.append(
                 ValidationViolation(
                     column=col_name,
                     rule="nullable",
-                    message=f"Column contains {null_count} missing value(s) but is marked as non-nullable."
+                    message=f"Column contains {null_count} missing value(s) but is marked as non-nullable.",
                 )
             )
-            
+
         non_null_series = series[~null_mask]
         if non_null_series.empty:
             # If everything is null (or empty), skip further value checks
@@ -132,16 +129,16 @@ class SchemaValidator:
         # 2. Datatype
         if rule.expected_dtype is not None:
             actual_dtype = str(series.dtype)
-            
-            # Allow some flexibility, e.g., if expected is 'int64', accept 'Int64' (nullable int) or 'int32' 
-            # based on substring matching, or exact match. For strictness, we'll do an exact match or 
+
+            # Allow some flexibility, e.g., if expected is 'int64', accept 'Int64' (nullable int) or 'int32'
+            # based on substring matching, or exact match. For strictness, we'll do an exact match or
             # kind match (e.g. expected='int' matches 'int64', 'int32').
             if not self._is_dtype_compatible(actual_dtype, rule.expected_dtype):
                 violations.append(
                     ValidationViolation(
                         column=col_name,
                         rule="expected_dtype",
-                        message=f"Expected dtype '{rule.expected_dtype}', found '{actual_dtype}'."
+                        message=f"Expected dtype '{rule.expected_dtype}', found '{actual_dtype}'.",
                     )
                 )
 
@@ -154,12 +151,12 @@ class SchemaValidator:
                         ValidationViolation(
                             column=col_name,
                             rule="min_value",
-                            message=f"Found {out_of_bounds} value(s) below the minimum allowed ({rule.min_value})."
+                            message=f"Found {out_of_bounds} value(s) below the minimum allowed ({rule.min_value}).",
                         )
                     )
             except TypeError:
-                pass # e.g. comparing strings to min_value float
-                
+                pass  # e.g. comparing strings to min_value float
+
         if rule.max_value is not None:
             try:
                 out_of_bounds = (non_null_series > rule.max_value).sum()
@@ -168,7 +165,7 @@ class SchemaValidator:
                         ValidationViolation(
                             column=col_name,
                             rule="max_value",
-                            message=f"Found {out_of_bounds} value(s) above the maximum allowed ({rule.max_value})."
+                            message=f"Found {out_of_bounds} value(s) above the maximum allowed ({rule.max_value}).",
                         )
                     )
             except TypeError:
@@ -184,7 +181,7 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="allowed_values",
-                        message=f"Found {invalid_count} value(s) not in allowed list. Example invalid values: {unique_invalid[:3]}"
+                        message=f"Found {invalid_count} value(s) not in allowed list. Example invalid values: {unique_invalid[:3]}",
                     )
                 )
 
@@ -196,16 +193,16 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="unique",
-                        message=f"Column requires unique values, but found {dup_count} duplicate(s)."
+                        message=f"Column requires unique values, but found {dup_count} duplicate(s).",
                     )
                 )
 
         # Date Validity (min_date, max_date)
         if rule.min_date is not None or rule.max_date is not None:
             try:
-                datetime_series = pd.to_datetime(non_null_series, errors='coerce')
+                datetime_series = pd.to_datetime(non_null_series, errors="coerce")
                 valid_dates = datetime_series.dropna()
-                
+
                 # Report invalid dates if there were conversion errors
                 invalid_dates_count = len(non_null_series) - len(valid_dates)
                 if invalid_dates_count > 0:
@@ -213,7 +210,7 @@ class SchemaValidator:
                         ValidationViolation(
                             column=col_name,
                             rule="date_format",
-                            message=f"Found {invalid_dates_count} value(s) that could not be parsed as dates."
+                            message=f"Found {invalid_dates_count} value(s) that could not be parsed as dates.",
                         )
                     )
 
@@ -225,10 +222,10 @@ class SchemaValidator:
                             ValidationViolation(
                                 column=col_name,
                                 rule="min_date",
-                                message=f"Found {out_of_bounds} date(s) before the minimum allowed ({rule.min_date})."
+                                message=f"Found {out_of_bounds} date(s) before the minimum allowed ({rule.min_date}).",
                             )
                         )
-                        
+
                 if rule.max_date is not None:
                     max_dt = pd.to_datetime(rule.max_date)
                     out_of_bounds = (valid_dates > max_dt).sum()
@@ -237,7 +234,7 @@ class SchemaValidator:
                             ValidationViolation(
                                 column=col_name,
                                 rule="max_date",
-                                message=f"Found {out_of_bounds} date(s) after the maximum allowed ({rule.max_date})."
+                                message=f"Found {out_of_bounds} date(s) after the maximum allowed ({rule.max_date}).",
                             )
                         )
             except Exception as e:
@@ -245,7 +242,7 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="date_validity",
-                        message=f"Error evaluating date constraints: {e!s}"
+                        message=f"Error evaluating date constraints: {e!s}",
                     )
                 )
 
@@ -262,7 +259,7 @@ class SchemaValidator:
                         ValidationViolation(
                             column=col_name,
                             rule="regex_pattern",
-                            message=f"Found {mismatch_count} value(s) not matching regex pattern '{rule.regex_pattern}'."
+                            message=f"Found {mismatch_count} value(s) not matching regex pattern '{rule.regex_pattern}'.",
                         )
                     )
             except Exception as e:
@@ -270,28 +267,28 @@ class SchemaValidator:
                     ValidationViolation(
                         column=col_name,
                         rule="regex_pattern",
-                        message=f"Error applying regex pattern: {e!s}"
+                        message=f"Error applying regex pattern: {e!s}",
                     )
                 )
-                
+
     def _is_dtype_compatible(self, actual: str, expected: str) -> bool:
         """Check if pandas actual dtype is compatible with the expected string."""
         actual_lower = actual.lower()
         expected_lower = expected.lower()
-        
+
         if actual_lower == expected_lower:
             return True
-            
+
         # Broad categories
-        if expected_lower in ('int', 'integer'):
-            return 'int' in actual_lower
-        if expected_lower in ('float', 'numeric'):
-            return 'float' in actual_lower or 'int' in actual_lower
-        if expected_lower in ('str', 'string', 'text'):
-            return actual_lower in ('object', 'string')
-        if expected_lower == 'bool':
-            return 'bool' in actual_lower
-        if expected_lower == 'datetime':
-            return 'datetime' in actual_lower
-            
+        if expected_lower in ("int", "integer"):
+            return "int" in actual_lower
+        if expected_lower in ("float", "numeric"):
+            return "float" in actual_lower or "int" in actual_lower
+        if expected_lower in ("str", "string", "text"):
+            return actual_lower in ("object", "string")
+        if expected_lower == "bool":
+            return "bool" in actual_lower
+        if expected_lower == "datetime":
+            return "datetime" in actual_lower
+
         return False

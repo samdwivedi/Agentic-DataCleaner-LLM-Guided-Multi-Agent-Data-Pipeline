@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class BaseLLMProvider(ABC):
     """Abstract base class for LLM providers."""
-    
+
     def __init__(self, config: StrategistConfig):
         self.config = config
 
@@ -33,29 +33,28 @@ class BaseLLMProvider(ABC):
 
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+
 class OllamaProvider(BaseLLMProvider):
     """Concrete implementation for local Ollama."""
-    
+
     @retry(
         stop=stop_after_attempt(3),
         wait=wait_exponential(multiplier=1, min=2, max=10),
         retry=retry_if_exception_type((httpx.RequestError, httpx.TimeoutException)),
-        reraise=True
+        reraise=True,
     )
     def generate_strategy(self, system_prompt: str, user_prompt: str) -> str:
         """Call Ollama /api/generate endpoint."""
-        
+
         payload = {
             "model": self.config.model_name,
             "system": system_prompt,
             "prompt": user_prompt,
             "stream": False,
             "format": "json",
-            "options": {
-                "temperature": self.config.temperature
-            }
+            "options": {"temperature": self.config.temperature},
         }
-        
+
         try:
             with httpx.Client(timeout=self.config.timeout_seconds) as client:
                 response = client.post(self.config.endpoint_url, json=payload)

@@ -8,6 +8,7 @@ from app.persistence.repository import SessionRepository
 
 logger = logging.getLogger(__name__)
 
+
 @celery_app.task(bind=True, name="analyze_task")
 def analyze_task(self, session_id: str) -> dict[str, Any]:
     db = SessionLocal()
@@ -19,6 +20,7 @@ def analyze_task(self, session_id: str) -> dict[str, Any]:
         raise
     finally:
         db.close()
+
 
 @celery_app.task(bind=True, name="generate_strategy_task")
 def generate_strategy_task(self, session_id: str) -> dict[str, Any]:
@@ -32,6 +34,7 @@ def generate_strategy_task(self, session_id: str) -> dict[str, Any]:
     finally:
         db.close()
 
+
 @celery_app.task(bind=True, name="validate_strategy_task")
 def validate_strategy_task(self, session_id: str, actions: list[dict[str, Any]]) -> dict[str, Any]:
     db = SessionLocal()
@@ -44,6 +47,7 @@ def validate_strategy_task(self, session_id: str, actions: list[dict[str, Any]])
     finally:
         db.close()
 
+
 @celery_app.task(bind=True, name="execute_strategy_task")
 def execute_strategy_task(self, session_id: str) -> dict[str, Any]:
     db = SessionLocal()
@@ -55,6 +59,7 @@ def execute_strategy_task(self, session_id: str) -> dict[str, Any]:
         raise
     finally:
         db.close()
+
 
 @celery_app.task(bind=True, name="validate_quality_task")
 def validate_quality_task(self, session_id: str) -> dict[str, Any]:

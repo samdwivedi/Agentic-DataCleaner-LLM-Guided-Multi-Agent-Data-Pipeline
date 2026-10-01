@@ -75,4 +75,3 @@ Analyze the following reports and propose a CleaningStrategy.
 {user_config_json}
 """
     return sections
-

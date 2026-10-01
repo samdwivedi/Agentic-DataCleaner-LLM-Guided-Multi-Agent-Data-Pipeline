@@ -5,15 +5,17 @@ from sqlalchemy.orm import Session
 from .models import PipelineSession
 
 # ── Allowlist of valid report column names ────────────────────────────────────
-_VALID_REPORT_TYPES = frozenset({
-    "profiler_report",
-    "schema_report",
-    "anomaly_report",
-    "strategy_raw",
-    "strategy_validated",
-    "execution_result",
-    "quality_report",
-})
+_VALID_REPORT_TYPES = frozenset(
+    {
+        "profiler_report",
+        "schema_report",
+        "anomaly_report",
+        "strategy_raw",
+        "strategy_validated",
+        "execution_result",
+        "quality_report",
+    }
+)
 
 
 class SessionRepository:
@@ -21,7 +23,9 @@ class SessionRepository:
         self.db = db
 
     def get_session(self, session_id: str) -> PipelineSession:
-        session = self.db.query(PipelineSession).filter(PipelineSession.session_id == session_id).first()
+        session = (
+            self.db.query(PipelineSession).filter(PipelineSession.session_id == session_id).first()
+        )
         if not session:
             raise ValueError(f"Session {session_id} not found.")
         return session
