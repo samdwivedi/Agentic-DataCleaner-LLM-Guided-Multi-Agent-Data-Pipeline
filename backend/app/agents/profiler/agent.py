@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import logging
 import math
+import re
 from collections import Counter
 from datetime import datetime, timezone
 
@@ -239,6 +240,9 @@ class ProfilerAgent:
                 except Exception:
                     pass
 
+        # Detect PII
+        pii_detected, pii_types = self._detect_pii(series)
+
         return ColumnProfile(
             name=name,
             dtype=dtype_str,
@@ -254,7 +258,40 @@ class ProfilerAgent:
             value_min=value_min,
             value_max=value_max,
             inferred_type=inferred,
+            pii_detected=pii_detected,
+            pii_types=pii_types,
         )
+
+    # ── PII Detection ─────────────────────────────────────────────────────────
+
+    def _detect_pii(self, series: pd.Series) -> tuple[bool, list[str]]:
+        """Detect PII (emails, phone numbers, SSNs) in a text column via regex sampling."""
+        pii_types = set()
+        
+        if series.empty or not pd.api.types.is_object_dtype(series):
+            return False, []
+            
+        non_nulls = series.dropna()
+        if non_nulls.empty:
+            return False, []
+            
+        # Sample up to 500 rows for regex checking
+        sample_size = min(500, len(non_nulls))
+        sample = non_nulls.astype(str).sample(sample_size, random_state=42)
+        
+        email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b')
+        phone_pattern = re.compile(r'\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
+        ssn_pattern = re.compile(r'\b\d{3}-\d{2}-\d{4}\b')
+        
+        for val in sample:
+            if email_pattern.search(val):
+                pii_types.add("email")
+            if phone_pattern.search(val):
+                pii_types.add("phone")
+            if ssn_pattern.search(val):
+                pii_types.add("ssn")
+                
+        return len(pii_types) > 0, list(pii_types)
 
     # ── Numerical statistics ──────────────────────────────────────────────────
 
@@ -559,6 +596,12 @@ class ProfilerAgent:
                 reasons.append(
                     "Appears to be an ID column (near-unique values). "
                     "Verify it is not accidentally included in aggregations."
+                )
+
+            # PII detected
+            if col.pii_detected:
+                reasons.append(
+                    f"PII detected ({', '.join(col.pii_types)}). Strongly recommend applying 'mask_pii' action."
                 )
 
             if reasons:

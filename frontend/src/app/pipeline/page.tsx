@@ -63,6 +63,7 @@ export default function PipelineDashboard() {
   const [strategyData, setStrategyData] = useState<any>(null)
   const [executionData, setExecutionData] = useState<any>(null)
   const [qualityData, setQualityData] = useState<any>(null)
+  const [exportFormat, setExportFormat] = useState('csv')
   
   const [loadingMsg, setLoadingMsg] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -300,8 +301,19 @@ export default function PipelineDashboard() {
                   </p>
                   
                   <div className="flex items-center justify-center gap-4">
+                    <select 
+                      value={exportFormat}
+                      onChange={(e) => setExportFormat(e.target.value)}
+                      className="px-4 py-4 bg-slate-800 text-white rounded-2xl border border-slate-700 outline-none focus:border-emerald-500 transition-colors cursor-pointer shadow-lg font-medium"
+                    >
+                      <option value="csv">CSV</option>
+                      <option value="parquet">Parquet</option>
+                      <option value="xlsx">Excel (XLSX)</option>
+                      <option value="json">JSON</option>
+                    </select>
+
                     <a 
-                      href={`${API_BASE}/pipeline/${sessionId}/download`}
+                      href={`${API_BASE}/pipeline/${sessionId}/download?format=${exportFormat}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       id="download-cleaned-btn"

@@ -103,6 +103,7 @@ ACTION_DTYPE_COMPATIBILITY: dict[str, set | None] = {
     "remove_duplicates":        None,   # any type (row-level operation)
     "standardize_categories":   {"categorical"},
     "convert_datatype":         None,   # any type (user supplies target dtype)
+    "mask_pii":                 None,   # any type (but primarily text/categorical)
 }
 
 

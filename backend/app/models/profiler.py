@@ -145,6 +145,10 @@ class ColumnProfile(BaseModel, frozen=True):
         ),
     )
 
+    # PII Info
+    pii_detected: bool = Field(False, description="Whether PII was detected in this column.")
+    pii_types: list[str] = Field(default_factory=list, description="List of PII types detected (e.g. 'email', 'phone').")
+
 
 # ── Dataset-level metadata ────────────────────────────────────────────────────
 

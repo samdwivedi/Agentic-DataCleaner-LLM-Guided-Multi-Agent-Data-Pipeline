@@ -29,6 +29,7 @@ class ActionRegistry(str, Enum):
     REMOVE_DUPLICATES = "remove_duplicates"
     STANDARDIZE_CATEGORIES = "standardize_categories"
     CONVERT_DATATYPE = "convert_datatype"
+    MASK_PII = "mask_pii"
     NONE = "none"
 
 

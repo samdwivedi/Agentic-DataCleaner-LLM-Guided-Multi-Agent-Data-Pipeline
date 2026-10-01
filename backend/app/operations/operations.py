@@ -298,6 +298,44 @@ def noop(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
+# SECURITY & PII OPERATIONS
+# ═══════════════════════════════════════════════════════════════════════════════
+
+
+def mask_pii(df: pd.DataFrame, column: str, params: dict[str, Any]) -> OpResult:
+    """Mask PII in a column using basic regex (emails, phone, SSN)."""
+    if column not in df.columns:
+        raise ValueError(f"Column '{column}' not found.")
+    
+    result = df.copy()
+    non_null_mask = result[column].notna()
+    if not non_null_mask.any():
+        return df, 0, 0
+        
+    original = result.loc[non_null_mask, column].astype(str).copy()
+    
+    import re
+    email_pattern = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b')
+    phone_pattern = re.compile(r'\b(?:\+?1[-.\s]?)?\(?[2-9]\d{2}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b')
+    ssn_pattern = re.compile(r'\b\d{3}-\d{2}-\d{4}\b')
+    
+    mask_str = params.get("mask", "***REDACTED***")
+    
+    masked = original.copy()
+    masked = masked.str.replace(email_pattern, mask_str, regex=True)
+    masked = masked.str.replace(phone_pattern, mask_str, regex=True)
+    masked = masked.str.replace(ssn_pattern, mask_str, regex=True)
+    
+    changed_mask = original != masked
+    values_changed = int(changed_mask.sum())
+    
+    if values_changed > 0:
+        result.loc[non_null_mask, column] = masked
+        
+    return result, 0, values_changed
+
+
+# ═══════════════════════════════════════════════════════════════════════════════
 # OPERATION DISPATCH TABLE
 # ═══════════════════════════════════════════════════════════════════════════════
 
@@ -314,5 +352,6 @@ OPERATION_DISPATCH = {
     "cap_outliers":           cap_outliers,
     "standardize_categories": standardize_categories,
     "convert_datatype":       convert_datatype,
+    "mask_pii":               mask_pii,
     "none":                   noop,
 }

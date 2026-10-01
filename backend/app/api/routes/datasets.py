@@ -130,16 +130,55 @@ async def get_task_status(task_id: str):
     else:
         return {"status": task_result.state}
 
+import pandas as pd
+
 @router.get("/{session_id}/download", summary="Download cleaned dataset")
-async def download_cleaned(session_id: str, repo: SessionRepository = Depends(get_repo)):
+async def download_cleaned(session_id: str, format: str = "csv", repo: SessionRepository = Depends(get_repo)):
     _validate_session_id(session_id)
+    format = format.lower()
+    valid_formats = {"csv", "parquet", "xlsx", "json"}
+    if format not in valid_formats:
+        raise HTTPException(status_code=400, detail=f"Invalid format. Supported formats: {', '.join(valid_formats)}")
+
     try:
         csv_bytes = repo.get_cleaned_csv(session_id)
-        return StreamingResponse(
-            io.BytesIO(csv_bytes), 
-            media_type="text/csv", 
-            headers={"Content-Disposition": "attachment; filename=cleaned_dataset.csv"}
-        )
+        
+        if format == "csv":
+            return StreamingResponse(
+                io.BytesIO(csv_bytes), 
+                media_type="text/csv", 
+                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.csv"}
+            )
+            
+        # Parse into DataFrame for conversion
+        df = pd.read_csv(io.BytesIO(csv_bytes))
+        output = io.BytesIO()
+        
+        if format == "parquet":
+            df.to_parquet(output, index=False)
+            output.seek(0)
+            return StreamingResponse(
+                output, 
+                media_type="application/vnd.apache.parquet", 
+                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.parquet"}
+            )
+        elif format == "xlsx":
+            df.to_excel(output, index=False, engine="openpyxl")
+            output.seek(0)
+            return StreamingResponse(
+                output, 
+                media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.xlsx"}
+            )
+        elif format == "json":
+            df.to_json(output, orient="records")
+            output.seek(0)
+            return StreamingResponse(
+                output, 
+                media_type="application/json", 
+                headers={"Content-Disposition": f"attachment; filename=cleaned_dataset.json"}
+            )
+            
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Cleaned dataset not found.")
     except Exception as e:
