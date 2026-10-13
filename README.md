@@ -196,33 +196,5 @@ npm install
 npm run dev
 ```
 
-##  API Documentation (Pipeline Routes)
 
-The backend exposes a stateful session-based architecture under `/pipeline`:
-- `POST /pipeline/upload` — Uploads CSV & initiates a UUID session.
-- `POST /pipeline/{session_id}/analyze` — Runs Profiler, Schema, and Anomaly agents.
-- `POST /pipeline/{session_id}/strategy` — Prompts LLM for a structured cleaning plan.
-- `POST /pipeline/{session_id}/validate-strategy` — Validates proposed actions against thresholds.
-- `POST /pipeline/{session_id}/execute` — Runs the deterministic Pandas executor.
-- `POST /pipeline/{session_id}/validate-quality` — Scores before/after dataset metrics.
-- `GET /pipeline/{session_id}/download` — Retrieves the cleaned CSV.
-
-##  Failure Modes & Resiliency
-
-| Failure Scenario | System Behavior |
-| :--- | :--- |
-| **Invalid CSV Upload** | Upload is rejected immediately (400 Bad Request) and session is destroyed. |
-| **LLM Unavailability** | Strategist catches `httpx.TimeoutException` or `RequestError` and gracefully fails (502 Bad Gateway), preserving session state for later retries. |
-| **LLM Output Malformed** | Pydantic strictly rejects unparseable JSON or missing fields. |
-| **Dangerous Strategy Proposed** | `StrategyValidator` flags limits (e.g. dropping too many rows) and rejects the strategy execution. |
-| **Executor Operation Fails** | Executor traps Pandas errors, skips the failed step (maintaining original dataset), logs the error, and proceeds to the next valid action. |
-| **Quality Degradation** | `QualityAssessor` flags a negative delta; dashboard notifies the user that the strategy was ineffective. |
-
-##  Roadmap
-
-- [x] **Phase 1-10:** Complete multi-agent pipeline and interactive Next.js dashboard.
-- [ ] **Phase 11:** Implement multi-table relational schema validation.
-- [ ] **Phase 12:** Add support for JSON, Parquet, and Excel inputs.
-- [ ] **Phase 13:** Integrate advanced ML-based anomaly detection (Isolation Forests).
-- [ ] **Phase 14:** Distributed data execution backend integration.
 
